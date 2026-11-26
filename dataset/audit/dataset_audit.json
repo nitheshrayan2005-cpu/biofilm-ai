@@ -1,0 +1,38 @@
+{
+  "total_isolates": 103,
+  "pathogenic": 62,
+  "commensal": 41,
+  "duplicate_ids": 0,
+  "duplicate_rows": 0,
+  "missing_values_cells": 0,
+  "feature_columns": 343,
+  "kmer_features": 340,
+  "non_kmer_features": [
+    "sequence_length",
+    "GC_fraction",
+    "N_fraction"
+  ],
+  "target_leakage": "CLEAN",
+  "metadata_match": "103/103",
+  "epidemiology_agreement": "103/103",
+  "sequence_length": {
+    "min": 2390727,
+    "mean": 2633775,
+    "max": 6747711
+  },
+  "gc_fraction": {
+    "min": 0.3178,
+    "mean": 0.321,
+    "max": 0.4079
+  },
+  "n_fraction_nonzero": 0,
+  "empty_sequences": 0,
+  "split": {
+    "train": 72,
+    "val": 15,
+    "test": 16,
+    "level": "isolate",
+    "seed": 42
+  },
+  "leakage_check": "SAFE \u2014 no cross-split overlap"
+}

@@ -1,0 +1,17 @@
+isolate_id,true_label,predicted_label,pathogenic_probability,correct
+1011,commensal,commensal,0.0062,1
+424,pathogenic,pathogenic,0.7646,1
+457,pathogenic,pathogenic,0.8854,1
+463,pathogenic,pathogenic,1.0,1
+470,pathogenic,pathogenic,0.9804,1
+484,pathogenic,pathogenic,0.6548,1
+579,pathogenic,pathogenic,0.874,1
+599,commensal,pathogenic,0.8575,0
+615,pathogenic,commensal,0.2253,0
+634,pathogenic,commensal,0.4288,0
+645,pathogenic,pathogenic,0.9787,1
+654,pathogenic,pathogenic,0.65,1
+734,commensal,pathogenic,0.8945,0
+780,commensal,pathogenic,0.6401,0
+961,commensal,commensal,0.0212,1
+975,commensal,commensal,0.3652,1

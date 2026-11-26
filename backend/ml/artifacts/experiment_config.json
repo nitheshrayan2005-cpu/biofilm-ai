@@ -1,0 +1,39 @@
+{
+  "experiment": "genomic_pathogenic_vs_commensal",
+  "target": "Epidemiology (pathogenic=1, commensal=0)",
+  "inputs": "343 genomic features (340 kmer + sequence_length + GC_fraction + N_fraction)",
+  "split": {
+    "train": 72,
+    "val": 15,
+    "test": 16
+  },
+  "split_level": "isolate",
+  "seed": 42,
+  "hyperparameters": {
+    "logistic_regression": {
+      "max_iter": 2000,
+      "class_weight": "balanced"
+    },
+    "random_forest": {
+      "n_estimators": 500,
+      "class_weight": "balanced"
+    },
+    "mlp": {
+      "architecture": "343-64-1",
+      "lr": 0.001,
+      "weight_decay": 0.0001,
+      "epochs": 200,
+      "patience": 20,
+      "best_epoch": 33,
+      "early_stopping": "val_loss patience=20"
+    }
+  },
+  "best_model_by_val_roc": "logistic_regression",
+  "dependencies": {
+    "torch": "2.13.0+cpu",
+    "torchvision": "0.28.0+cpu",
+    "numpy": "2.3.5",
+    "pandas": "2.2.3",
+    "scikit-learn": "1.6.1"
+  }
+}

@@ -1,0 +1,27 @@
+[
+  {
+    "time": 0.0,
+    "flow_rate_ul_min": 1,
+    "channel": "FLAT"
+  },
+  {
+    "time": 0.5,
+    "flow_rate_ul_min": 5,
+    "channel": "FLAT"
+  },
+  {
+    "time": 1.0,
+    "flow_rate_ul_min": 5,
+    "channel": "RC1"
+  },
+  {
+    "time": 0.75,
+    "flow_rate_ul_min": 10,
+    "channel": "RT2"
+  },
+  {
+    "time": 1.0,
+    "flow_rate_ul_min": 1,
+    "channel": "RT3"
+  }
+]

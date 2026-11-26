@@ -1,0 +1,23 @@
+{
+  "features": [
+    "time",
+    "flow_rate_ul_min",
+    "channel"
+  ],
+  "target": "AVEG",
+  "training_rows": 580,
+  "testing_rows": 203,
+  "training_experiments": 20,
+  "testing_experiments": 7,
+  "results": {
+    "Baseline": {
+      "MAE": 4.116909419651028,
+      "RMSE": 6.71182802563109
+    },
+    "Decision Tree": {
+      "MAE": 2.0635447105377964,
+      "RMSE": 3.8784255612565532
+    }
+  },
+  "evaluation": "GroupShuffleSplit by channel-flow experiment"
+}

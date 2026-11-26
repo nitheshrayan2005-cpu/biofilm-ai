@@ -1,0 +1,17 @@
+# BiofilmAI — Real ML Model Dependencies
+#
+# These are REQUIRED only for building/training/running the real
+# PyTorch model. The FastAPI demo pipeline does NOT need them.
+#
+# Install with:
+#     pip install -r backend/ml/requirements-ml.txt
+#
+# NOTE: torch/torchvision are large. For CPU-only development use:
+#     pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
+
+torch>=2.0.0
+torchvision>=0.15.0
+numpy>=1.24.0
+pandas>=2.0.0
+scikit-learn>=1.3.0
+pillow>=10.0.0

@@ -1,0 +1,6 @@
+isolate_id,true_label,predicted_label,pathogenic_probability,correct,top_features
+599,commensal,pathogenic,0.8575,0,kmer_GTAC(+1.795); kmer_GGCC(+1.029); kmer_GGGG(+0.867); kmer_CCAG(+0.773); kmer_TAAG(+0.748)
+615,pathogenic,commensal,0.2253,0,kmer_CTTA(+0.722); kmer_TGCA(+0.708); kmer_TATA(+0.630); kmer_ACGT(+0.531); kmer_CTGG(+0.526)
+634,pathogenic,commensal,0.4288,0,kmer_GTAC(+0.996); kmer_CAGT(+0.532); kmer_TGTA(+0.521); kmer_GCTA(+0.405); kmer_TCCG(+0.380)
+734,commensal,pathogenic,0.8945,0,kmer_GTAC(+0.960); kmer_CGGC(+0.706); kmer_CGAC(+0.576); kmer_CTAG(+0.533); kmer_TAAG(+0.493)
+780,commensal,pathogenic,0.6401,0,kmer_AGCT(+1.328); kmer_GCCA(+0.881); kmer_ACTG(+0.800); kmer_CGGA(+0.754); kmer_TTTA(+0.705)

@@ -1,0 +1,18 @@
+{
+  "experiment_id": "EXPERIMENT_4_CLINICAL_METADATA",
+  "enabled": false,
+  "data_available": false,
+  "modality": "clinical_metadata",
+  "input": "structured clinical/sample metadata (32-dim encoded)",
+  "target": "pending — requires a verified label for the metadata-only experiment",
+  "pipeline": {
+    "preprocessing": "backend/ml/preprocessing/clinical.py",
+    "model": "backend/ml/models/clinical_encoder.py",
+    "split": "sample-level stratified (backend/ml/data/modality_alignment.py)",
+    "training": "backend/ml/training/trainer.py",
+    "evaluation": "backend/ml/evaluation/evaluator.py",
+    "artifacts": "backend/ml/artifacts/"
+  },
+  "registry_entry": "PENDING_VERIFICATION — the Dryad metadata is paired with the 103 genomes (103/103), but a separate metadata-only experiment is not yet designed",
+  "notes": "Scaffold only. The Dryad clinical metadata is real and sample-paired with the genomes; it is a categorical-identifier table, not a set of quantitative clinical measurements."
+}

@@ -1,0 +1,278 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+:root {
+  --color-primary: 23 107 135;
+  --color-secondary: 42 157 143;
+  --color-navy: 18 48 71;
+  --color-bg: 247 250 252;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+  background-color: #F7FAFC;
+  color: #16313F;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* Custom focus styles */
+*:focus-visible {
+  outline: 2px solid #176B87;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #DCE7EC;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #BAD1DA;
+}
+
+/* Selection */
+::selection {
+  background-color: rgba(23, 107, 135, 0.18);
+  color: #123047;
+}
+
+/* Utility classes */
+.text-balance {
+  text-wrap: balance;
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid #DCE7EC;
+}
+
+.gradient-text {
+  background: linear-gradient(135deg, #176B87 0%, #2A9D8F 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.scientific-grid {
+  background-image:
+    linear-gradient(rgba(176, 209, 218, 0.2) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(176, 209, 218, 0.2) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+.diagram-grid {
+  background-image: radial-gradient(#DCE7EC 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.shimmer {
+  background: linear-gradient(90deg, #EAF6FA 0%, #F5FBFD 50%, #EAF6FA 100%);
+  background-size: 200% 100%;
+  animation: shimmer 1.8s ease-in-out infinite;
+}
+
+.particle-line {
+  stroke-dasharray: 6 8;
+  animation: dash 4s linear infinite;
+}
+
+@keyframes dash {
+  to {
+    stroke-dashoffset: -100;
+  }
+}
+
+.dot-flow {
+  animation: dotFlow 3s ease-in-out infinite;
+}
+
+@keyframes dotFlow {
+  0%, 100% { transform: translate(0, 0); opacity: 0; }
+  50% { transform: translate(60px, 0); opacity: 1; }
+}
+
+/* ── Motion: login, analysis, analyzing screen, results ───────────────── */
+
+/* Floating cells behind the login card */
+.cell-float {
+  position: absolute;
+  border-radius: 9999px;
+  animation: cellFloat linear infinite;
+  will-change: transform;
+}
+@keyframes cellFloat {
+  0%   { transform: translate(0, 0) scale(1); opacity: 0; }
+  10%  { opacity: 1; }
+  50%  { transform: translate(24px, -50vh) scale(1.08); }
+  90%  { opacity: 1; }
+  100% { transform: translate(-12px, -100vh) scale(0.95); opacity: 0; }
+}
+
+/* Slowly drifting colour blobs */
+.blob {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(60px);
+  animation: blobDrift 18s ease-in-out infinite alternate;
+}
+@keyframes blobDrift {
+  0%   { transform: translate(0, 0) scale(1); }
+  100% { transform: translate(60px, 40px) scale(1.15); }
+}
+
+/* Rotating gradient border glow */
+.glow-border {
+  position: relative;
+  isolation: isolate;
+}
+.glow-border::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  padding: 2px;
+  background: conic-gradient(from var(--glow-angle, 0deg), #176B87, #2A9D8F, #7AC6D9, #176B87);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  animation: glowSpin 6s linear infinite;
+  z-index: -1;
+}
+@property --glow-angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+@keyframes glowSpin { to { --glow-angle: 360deg; } }
+
+/* Button light sweep */
+.btn-sheen { position: relative; overflow: hidden; }
+.btn-sheen::after {
+  content: '';
+  position: absolute;
+  top: 0; left: -60%;
+  width: 40%; height: 100%;
+  background: linear-gradient(100deg, transparent, rgba(255,255,255,0.35), transparent);
+  transform: skewX(-20deg);
+  animation: sheen 3.2s ease-in-out infinite;
+}
+@keyframes sheen { 0%, 60% { left: -60%; } 100% { left: 130%; } }
+
+/* Entrances */
+.pop-in { animation: popIn 0.45s cubic-bezier(0.2, 0.9, 0.3, 1.3) both; }
+@keyframes popIn {
+  0%   { opacity: 0; transform: scale(0.85); }
+  100% { opacity: 1; transform: scale(1); }
+}
+.rise-in { animation: riseIn 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) both; }
+@keyframes riseIn {
+  0%   { opacity: 0; transform: translateY(18px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+.step-enter { animation: stepEnter 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) both; }
+@keyframes stepEnter {
+  0%   { opacity: 0; transform: translateX(16px); }
+  100% { opacity: 1; transform: translateX(0); }
+}
+
+/* Pulsing ring around the active step */
+.ring-pulse { position: relative; }
+.ring-pulse::after {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 9999px;
+  border: 2px solid rgba(23, 107, 135, 0.45);
+  animation: ringPulse 1.8s ease-out infinite;
+}
+@keyframes ringPulse {
+  0%   { transform: scale(0.85); opacity: 1; }
+  100% { transform: scale(1.5); opacity: 0; }
+}
+
+/* Scanner line over an image */
+.scan-line {
+  position: absolute;
+  left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, #2A9D8F, #7AC6D9, #2A9D8F, transparent);
+  box-shadow: 0 0 16px 4px rgba(42, 157, 143, 0.55);
+  animation: scan 2.2s ease-in-out infinite;
+}
+.scan-once { animation-iteration-count: 1; animation-fill-mode: forwards; }
+@keyframes scan {
+  0%   { top: 0%; opacity: 0; }
+  10%  { opacity: 1; }
+  90%  { opacity: 1; }
+  100% { top: 100%; opacity: 0; }
+}
+
+/* A line that draws itself (SVG path with pathLength="1") */
+.draw-line {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: drawLine 2.4s ease-out forwards;
+}
+.draw-line-loop { animation: drawLineLoop 2.6s ease-in-out infinite; }
+@keyframes drawLine { to { stroke-dashoffset: 0; } }
+@keyframes drawLineLoop {
+  0%   { stroke-dashoffset: 1; }
+  60%  { stroke-dashoffset: 0; }
+  100% { stroke-dashoffset: 0; opacity: 0.2; }
+}
+
+/* DNA helix: two strands of dots bobbing out of phase */
+.helix-dot { animation: helix 1.6s ease-in-out infinite; }
+.helix-dot.b { animation-name: helixB; }
+@keyframes helix {
+  0%, 100% { transform: translateY(-14px) scale(0.8); opacity: 0.55; }
+  50%      { transform: translateY(14px) scale(1.15); opacity: 1; }
+}
+@keyframes helixB {
+  0%, 100% { transform: translateY(14px) scale(1.15); opacity: 1; }
+  50%      { transform: translateY(-14px) scale(0.8); opacity: 0.55; }
+}
+
+/* Soft coloured glow behind the result */
+.result-glow { animation: resultGlow 3s ease-in-out infinite alternate; }
+@keyframes resultGlow {
+  0%   { opacity: 0.35; transform: scale(0.95); }
+  100% { opacity: 0.7; transform: scale(1.05); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cell-float, .blob, .glow-border::before, .btn-sheen::after, .pop-in, .rise-in,
+  .step-enter, .ring-pulse::after, .scan-line, .draw-line, .draw-line-loop,
+  .helix-dot, .result-glow {
+    animation: none !important;
+  }
+  .draw-line { stroke-dashoffset: 0; }
+}

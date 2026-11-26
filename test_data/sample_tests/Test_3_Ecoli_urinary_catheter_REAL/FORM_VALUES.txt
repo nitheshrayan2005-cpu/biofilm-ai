@@ -1,0 +1,53 @@
+TEST 3: E. COLI ON A URINARY CATHETER
+Data type: REAL DATASET
+========================================================================
+
+FILES IN THIS FOLDER
+  1_microscopy.png     SIMULATED image
+  2_spectroscopy.csv   REAL Raman spectrum - Bacteria-ID dataset, held-out test spectrum, isolate 3
+  3_genomics.fasta     REAL genome - BV-BRC 562.22600, Escherichia coli O8:H19 strain ECO0176
+
+HOW TO RUN
+1. Sign in at http://localhost:3000
+2. New Analysis -> Step 1: copy each value from STEP 1 below into the matching field
+3. Step 2: upload 1_microscopy.png
+4. Step 3: upload 2_spectroscopy.csv (a spectrum preview should appear)
+5. Step 4: upload 3_genomics.fasta
+6. Step 5: copy the values from STEP 5 below
+7. Step 6: click "Run Multimodal Analysis"
+
+STEP 1 - SAMPLE INFORMATION (copy and paste)
+  Sample ID                    : CAU-2026-047
+  Study ID                     : BF-TEST-2026
+  Sample Type                  : Urine sample
+  Collection date              : 22-10-2026
+  Infection context            : Catheter-associated
+  Wound / implant context      : Long-term indwelling urinary catheter
+  Notes                        : Long-term indwelling catheter, changed 10 days ago. Cloudy urine, mild suprapubic discomfort. Catheter tip sent.
+
+STEP 5 - CLINICAL DATA (copy and paste / select)
+  Infection context            : Catheter-associated
+  Chronicity / duration (days) : 8
+  Implant present              : Yes
+  Sample site                  : Leave as "Select..."   (no matching option)
+  Previous treatment category  : None
+  Previous culture information : Unknown
+  Additional notes             : Male, 66 y. CRP 69 mg/L, WBC 10, temperature 37.3 C. Catheter in use for about 4 months. No previous antibiotics.
+
+WHAT TO CHECK ON THE RESULTS PAGE
+- A probability, a risk category and the DEMO MODE banner appear
+- Multimodal Evidence Overview shows: Microscopy = Available, Spectroscopy = Available, Genomics = Available, Clinical = Available
+- Clinical Context shows the values you entered
+- Download Report produces a PDF
+- The analysis appears under History
+
+IMPORTANT: the website is in demo mode, so the probability is SIMULATED and changes
+on every run. It is not computed from these files. The "known answer" below is what a
+trained model should find, for use once the real model is connected.
+
+KNOWN ANSWER (from the source data)
+  - Organism: Escherichia coli (from the real genome record).
+  - Antibiotic resistance in the source record: none (sensitive to carbapenems and aminoglycosides).
+  - Clinical picture: recently changed catheter, typical of an early biofilm.
+
+The collection date field shows the browser's date format; type the date shown above into it.

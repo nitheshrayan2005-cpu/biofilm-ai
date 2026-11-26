@@ -1,0 +1,22 @@
+# Dependencies and build output
+node_modules/
+.next/
+out/
+tsconfig.tsbuildinfo
+next-env.d.ts
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+
+# Secrets and local accounts (never commit)
+.env
+.env.*
+backend/.auth_secret
+backend/doctors.json
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/

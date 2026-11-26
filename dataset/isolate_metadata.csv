@@ -1,0 +1,104 @@
+isolate_id,strain,country,year,seq_type,group,Epidemiology,isolation,label,genome_file
+423,1A,Germany,2001,171,B,pathogenic,Prosthetic Joint,1,423.fasta
+424,1B,Germany,2001,171,B,pathogenic,Prosthetic Joint,1,424.fasta
+433,7A,Germany,2001,2,A,pathogenic,Prosthetic Joint,1,433.fasta
+434,7B,Germany,2001,2,A,pathogenic,Prosthetic Joint,1,434.fasta
+445,13A,Germany,2001,59,A,pathogenic,Prosthetic Joint,1,445.fasta
+446,13B,Germany,2002,59,A,pathogenic,Prosthetic Joint,1,446.fasta
+457,19A,Germany,2001,51,A,pathogenic,Prosthetic Joint,1,457.fasta
+458,19B,Germany,2002,51,A,pathogenic,Prosthetic Joint,1,458.fasta
+463,23A,Germany,2001,89,A,pathogenic,Prosthetic Joint,1,463.fasta
+464,23B,Germany,2002,89,A,pathogenic,Prosthetic Joint,1,464.fasta
+467,25A,Germany,2002,,B,pathogenic,Prosthetic Joint,1,467.fasta
+468,25B,Germany,2002,,B,pathogenic,Prosthetic Joint,1,468.fasta
+469,26A,Germany,2002,66,B,pathogenic,Prosthetic Joint,1,469.fasta
+470,26B,Germany,2002,66,B,pathogenic,Prosthetic Joint,1,470.fasta
+479,33A,Germany,2002,89,A,pathogenic,Prosthetic Joint,1,479.fasta
+480,33B,Germany,2002,89,A,pathogenic,Prosthetic Joint,1,480.fasta
+483,36A,Germany,2001,217,A,pathogenic,Prosthetic Joint,1,483.fasta
+484,36B,Germany,2002,217,A,pathogenic,Prosthetic Joint,1,484.fasta
+503,46A,Germany,2002,5,A,pathogenic,Prosthetic Joint,1,503.fasta
+504,46B,Germany,2002,5,A,pathogenic,Prosthetic Joint,1,504.fasta
+511,54A,Germany,2002,2,A,pathogenic,Prosthetic Joint,1,511.fasta
+512,54B,Germany,2002,2,A,pathogenic,Prosthetic Joint,1,512.fasta
+513,55A,Germany,2002,22,A,pathogenic,Prosthetic Joint,1,513.fasta
+515,56A,Germany,2002,,B,pathogenic,Prosthetic Joint,1,515.fasta
+517,57A,Germany,2002,21,A,pathogenic,Prosthetic Joint,1,517.fasta
+523,60A,Germany,2002,89,A,pathogenic,Prosthetic Joint,1,523.fasta
+527,63A,Germany,2002,2,A,pathogenic,Prosthetic Joint,1,527.fasta
+537,70A,Germany,2002,22,A,pathogenic,Prosthetic Joint,1,537.fasta
+543,74A,Germany,2002,297,A,pathogenic,Prosthetic Joint,1,543.fasta
+544,74B,Germany,2003,297,A,pathogenic,Prosthetic Joint,1,544.fasta
+551,78A,Germany,2003,5,A,pathogenic,Prosthetic Joint,1,551.fasta
+563,84A,Germany,2002,5,A,pathogenic,Prosthetic Joint,1,563.fasta
+573,93A,Germany,2002,,A,pathogenic,Prosthetic Joint,1,573.fasta
+575,97A,Germany,2003,168,A,pathogenic,Prosthetic Joint,1,575.fasta
+579,99A,Germany,2003,10,A,pathogenic,Prosthetic Joint,1,579.fasta
+581,100A,Germany,2003,208,B,pathogenic,Prosthetic Joint,1,581.fasta
+587,104A,Germany,2003,48,A,pathogenic,Prosthetic Joint,1,587.fasta
+589,105A,Germany,2003,9,A,pathogenic,Prosthetic Joint,1,589.fasta
+591,NA1,UK,unknown,184,A,commensal,Nasal,0,591.fasta
+592,NA5,UK,unknown,88,A,commensal,Nasal,0,592.fasta
+593,NA6,UK,unknown,57,A,commensal,Nasal,0,593.fasta
+596,NA14,UK,unknown,88,A,commensal,Nasal,0,596.fasta
+599,NA21,UK,unknown,35,A,commensal,Nasal,0,599.fasta
+602,NA24,UK,unknown,7,A,commensal,Nasal,0,602.fasta
+608,NAs6,UK,unknown,171,C,commensal,Nasal,0,608.fasta
+607,NAs5,UK,unknown,297,A,commensal,Catheter,0,607.fasta
+615,8700/01 KH,Germany,2001,22,A,pathogenic,Catheter,1,615.fasta
+617,9591/01 MT,Germany,2001,2,A,pathogenic,Catheter,1,617.fasta
+618,9640/01 MT,Germany,2001,2,A,pathogenic,Catheter,1,618.fasta
+620,5189/99 LG,Germany,1999,2,A,pathogenic,Catheter,1,620.fasta
+622,6433/99 HH,Germany,1999,22,A,pathogenic,Catheter,1,622.fasta
+624,6528/99 HH,Germany,1999,22,A,pathogenic,Catheter,1,624.fasta
+625,9031/01 SK,Germany,2001,2,A,pathogenic,Catheter,1,625.fasta
+627,3917/99 LR,Germany,1999,2,A,pathogenic,Catheter,1,627.fasta
+629,1562/00 TW,Germany,2000,22,A,pathogenic,Catheter,1,629.fasta
+631,4696/00 BG,Germany,2000,,A,pathogenic,Catheter,1,631.fasta
+633,4768/00 BG,Germany,2000,2,A,pathogenic,Catheter,1,633.fasta
+634,5172/02 SSG,Germany,2002,,A,pathogenic,Catheter,1,634.fasta
+636,3628/99 ER,Germany,1999,2,A,pathogenic,Catheter,1,636.fasta
+637,3641/99 ER,Germany,1999,2,A,pathogenic,Catheter,1,637.fasta
+638,1451/02 SU,Germany,2002,2,A,pathogenic,Catheter,1,638.fasta
+640,2183/02 SU,Germany,2002,2,A,pathogenic,Catheter,1,640.fasta
+642,9170/01 SK,Germany,2001,2,A,pathogenic,Catheter,1,642.fasta
+643,5019 MS,Germany,1998,2,A,pathogenic,Catheter,1,643.fasta
+645,5060 MS,Germany,1998,2,A,pathogenic,Catheter,1,645.fasta
+646,5020/98 GA,Germany,1998,2,A,pathogenic,Catheter,1,646.fasta
+648,5045/98 GA,Germany,1998,2,A,pathogenic,Catheter,1,648.fasta
+649,4363/02 DD,Germany,2001,2,A,pathogenic,Catheter,1,649.fasta
+653,5525/01 DS,Germany,2001,5,A,pathogenic,Catheter,1,653.fasta
+654,5548/02 DS,Germany,2001,5,A,pathogenic,Catheter,1,654.fasta
+711,SS_0249,Germany,unknown,55,A,commensal,Animal,0,711.fasta
+712,SS_0250,Germany,unknown,256,A,commensal,Animal,0,712.fasta
+718,SS_0257,Germany,unknown,7,A,commensal,Animal,0,718.fasta
+722,SS_0261,Germany,unknown,19,A,commensal,Animal,0,722.fasta
+730,SS_0271,Germany,unknown,7,B,commensal,Animal,0,730.fasta
+734,SS_0276,Germany,unknown,93,A,commensal,Animal,0,734.fasta
+743,SS_0286,Germany,unknown,59,A,commensal,Animal,0,743.fasta
+748,SS_0291,Germany,unknown,110,A,commensal,Animal,0,748.fasta
+772,SS_0315,Germany,unknown,5,A,commensal,Nasal,0,772.fasta
+778,SS_0321,Germany,unknown,5,A,commensal,Nasal,0,778.fasta
+780,SS_0323,Germany,unknown,66,C,commensal,Nasal,0,780.fasta
+782,SS_0325,Germany,unknown,10,A,commensal,Nasal,0,782.fasta
+784,skin 1b,UK,2012,,A,commensal,Skin,0,784.fasta
+790,NAs16,UK,2008,32,A,commensal,Nasal,0,790.fasta
+952,skin 5a,UK,2012,89,A,commensal,Skin,0,952.fasta
+961,skin 9a,UK,2012,,A,commensal,Skin,0,961.fasta
+969,skin 19a,UK,2012,130,A,commensal,Skin,0,969.fasta
+973,skin 21c,UK,2012,204,A,commensal,Skin,0,973.fasta
+975,skin 22b,UK,2012,,A,commensal,Skin,0,975.fasta
+983,skin 31a,UK,2012,,C,commensal,Skin,0,983.fasta
+986,skin 32b,UK,2012,190,A,commensal,Skin,0,986.fasta
+995,skin 37b,UK,2012,38,A,commensal,Skin,0,995.fasta
+997,skin 38b,UK,2012,48,A,commensal,Skin,0,997.fasta
+1001,skin 40a,UK,2012,130,A,commensal,Skin,0,1001.fasta
+1004,skin 41b,UK,2012,59,A,commensal,Skin,0,1004.fasta
+1007,skin 43a,UK,2012,,A,commensal,Skin,0,1007.fasta
+1011,skin 46c,UK,2012,73,A,commensal,Skin,0,1011.fasta
+1015,skin 48a,UK,2012,73,A,commensal,Skin,0,1015.fasta
+1019,skin 50b,UK,2012,14,A,commensal,Skin,0,1019.fasta
+1021,skin 51b,UK,2012,19,C,commensal,Skin,0,1021.fasta
+1025,skin 53b,UK,2012,,C,commensal,Skin,0,1025.fasta
+1032,skin 56b,UK,2012,153,A,commensal,Skin,0,1032.fasta
+1037,skin 58,UK,2012,54,A,commensal,Skin,0,1037.fasta

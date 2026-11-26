@@ -1,0 +1,53 @@
+TEST 2: PSEUDOMONAS INFECTION OF A DIABETIC FOOT ULCER
+Data type: REAL DATASET
+========================================================================
+
+FILES IN THIS FOLDER
+  1_microscopy.png     SIMULATED image
+  2_spectroscopy.csv   REAL Raman spectrum - Bacteria-ID dataset, held-out test spectrum, isolate 12
+  3_genomics.fasta     REAL genome - BV-BRC 287.12629, Pseudomonas aeruginosa strain F2064
+
+HOW TO RUN
+1. Sign in at http://localhost:3000
+2. New Analysis -> Step 1: copy each value from STEP 1 below into the matching field
+3. Step 2: upload 1_microscopy.png
+4. Step 3: upload 2_spectroscopy.csv (a spectrum preview should appear)
+5. Step 4: upload 3_genomics.fasta
+6. Step 5: copy the values from STEP 5 below
+7. Step 6: click "Run Multimodal Analysis"
+
+STEP 1 - SAMPLE INFORMATION (copy and paste)
+  Sample ID                    : DFU-2026-112
+  Study ID                     : BF-TEST-2026
+  Sample Type                  : Tissue biopsy
+  Collection date              : 21-10-2026
+  Infection context            : Chronic wound
+  Wound / implant context      : Diabetic foot ulcer, plantar surface
+  Notes                        : Chronic plantar ulcer, green exudate, malodour, new fever and spreading erythema over 48 h. Deep tissue biopsy after debridement.
+
+STEP 5 - CLINICAL DATA (copy and paste / select)
+  Infection context            : Chronic wound
+  Chronicity / duration (days) : 140
+  Implant present              : No
+  Sample site                  : Lower leg   (closest option to the foot)
+  Previous treatment category  : Combination
+  Previous culture information : Unknown
+  Additional notes             : Male, 52 y. CRP 59.6 mg/L, WBC 18.6, temperature 38.7 C (fever). High exudate, malodour. 2 previous antibiotic courses plus debridement.
+
+WHAT TO CHECK ON THE RESULTS PAGE
+- A probability, a risk category and the DEMO MODE banner appear
+- Multimodal Evidence Overview shows: Microscopy = Available, Spectroscopy = Available, Genomics = Available, Clinical = Available
+- Clinical Context shows the values you entered
+- Download Report produces a PDF
+- The analysis appears under History
+
+IMPORTANT: the website is in demo mode, so the probability is SIMULATED and changes
+on every run. It is not computed from these files. The "known answer" below is what a
+trained model should find, for use once the real model is connected.
+
+KNOWN ANSWER (from the source data)
+  - Organism: Pseudomonas aeruginosa (from the real genome record).
+  - Antibiotic resistance in the source record: carbapenems, 3rd-generation cephalosporins, aminoglycosides and fluoroquinolones.
+  - Clinical picture: chronic wound with an acute flare, typical of biofilm releasing bacteria.
+
+The collection date field shows the browser's date format; type the date shown above into it.

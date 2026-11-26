@@ -1,0 +1,31 @@
+{
+  "experiment_id": "EXPERIMENT_2_MICROSCOPY",
+  "enabled": false,
+  "data_available": false,
+  "modality": "microscopy",
+  "input": "raw microscopy image (PNG/JPG/TIFF)",
+  "target": "pending — requires a verified label for the microscopy samples",
+  "candidate_dataset": {
+    "title": "Confocal microscopy images",
+    "doi": "10.15132/10000128",
+    "source": "University of Dundee Discovery Portal",
+    "url": "https://discovery.dundee.ac.uk/en/datasets/confocal-microscopy-images/",
+    "file": "EPSRC_data_share.zip (16.6 MB, multipart/x-zip)",
+    "license": "CC BY",
+    "organism": "Escherichia coli MG1655",
+    "description": "Confocal microscopy images of E. coli MG1655 micro-colonies after shear-stress treatment and adhesion of fimA mutants; Excel bacterial-count analysis (ImageJ).",
+    "download_status": "BLOCKED",
+    "download_error": "HTTP 403 — Cloudflare 'Just a moment...' anti-bot JavaScript challenge; no command-line tool could retrieve the file",
+    "verified": "metadata only — file contents NOT audited"
+  },
+  "pipeline": {
+    "preprocessing": "backend/ml/preprocessing/microscopy.py",
+    "model": "backend/ml/models/microscopy_encoder.py",
+    "split": "sample-level stratified (backend/ml/data/modality_alignment.py)",
+    "training": "backend/ml/training/trainer.py",
+    "evaluation": "backend/ml/evaluation/evaluator.py",
+    "artifacts": "backend/ml/artifacts/"
+  },
+  "registry_entry": "PENDING_VERIFICATION — dataset ZIP could not be downloaded (Cloudflare block)",
+  "notes": "The E. coli MG1655 biofilm study is NOT sample-paired with the S. epidermidis genomic experiment and must not be fused with it. No microscopy images are present in the project. No fabricated data."
+}

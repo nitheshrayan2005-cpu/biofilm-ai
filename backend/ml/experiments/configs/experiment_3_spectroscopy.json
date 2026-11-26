@@ -1,0 +1,18 @@
+{
+  "experiment_id": "EXPERIMENT_3_SPECTROSCOPY",
+  "enabled": false,
+  "data_available": false,
+  "modality": "spectroscopy",
+  "input": "raw spectral measurement (wavelength/intensity)",
+  "target": "pending — requires a verified label for the spectroscopy samples",
+  "pipeline": {
+    "preprocessing": "backend/ml/preprocessing/spectroscopy.py",
+    "model": "backend/ml/models/spectroscopy_encoder.py",
+    "split": "sample-level stratified (backend/ml/data/modality_alignment.py)",
+    "training": "backend/ml/training/trainer.py",
+    "evaluation": "backend/ml/evaluation/evaluator.py",
+    "artifacts": "backend/ml/artifacts/"
+  },
+  "registry_entry": "PENDING_VERIFICATION — do not populate until an independently verified spectroscopy dataset exists",
+  "notes": "Scaffold only. No spectral measurement files are present in the project. k-mer features are NOT spectroscopy."
+}

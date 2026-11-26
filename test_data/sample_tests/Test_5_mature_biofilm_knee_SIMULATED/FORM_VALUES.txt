@@ -1,0 +1,51 @@
+TEST 5: MATURE BIOFILM ON A KNEE IMPLANT
+Data type: SIMULATED
+========================================================================
+
+FILES IN THIS FOLDER
+  1_microscopy.png     SIMULATED image (dense live-cell clusters in matrix)
+  2_spectroscopy.csv   SIMULATED Raman spectrum (strong EPS band)
+  3_genomics.fasta     SIMULATED genome-like sequence (S. epidermidis GC content)
+
+HOW TO RUN
+1. Sign in at http://localhost:3000
+2. New Analysis -> Step 1: copy each value from STEP 1 below into the matching field
+3. Step 2: upload 1_microscopy.png
+4. Step 3: upload 2_spectroscopy.csv (a spectrum preview should appear)
+5. Step 4: upload 3_genomics.fasta
+6. Step 5: copy the values from STEP 5 below
+7. Step 6: click "Run Multimodal Analysis"
+
+STEP 1 - SAMPLE INFORMATION (copy and paste)
+  Sample ID                    : S-DEMO-001
+  Study ID                     : BF-DEMO-2026
+  Sample Type                  : Implant sonicate
+  Collection date              : 02-10-2026
+  Infection context            : Orthopedic implant
+  Wound / implant context      : Knee prosthesis, 8 months after surgery
+  Notes                        : Persistent pain and swelling around the prosthesis despite oral antibiotics.
+
+STEP 5 - CLINICAL DATA (copy and paste / select)
+  Infection context            : Orthopedic implant
+  Chronicity / duration (days) : 120
+  Implant present              : Yes
+  Sample site                  : Knee (prosthetic)
+  Previous treatment category  : Antibiotics
+  Previous culture information : Positive (pure culture)
+  Additional notes             : Elevated CRP. Sinus tract near the incision.
+
+WHAT TO CHECK ON THE RESULTS PAGE
+- A probability, a risk category and the DEMO MODE banner appear
+- Multimodal Evidence Overview shows: Microscopy = Available, Spectroscopy = Available, Genomics = Available, Clinical = Available
+- Clinical Context shows the values you entered
+- Download Report produces a PDF
+- The analysis appears under History
+
+IMPORTANT: the website is in demo mode, so the probability is SIMULATED and changes
+on every run. It is not computed from these files. The "known answer" below is what a
+trained model should find, for use once the real model is connected.
+
+KNOWN ANSWER (from the source data)
+  - Designed to look like a mature biofilm: dense clusters, visible matrix, strong EPS band.
+
+The collection date field shows the browser's date format; type the date shown above into it.

@@ -1,0 +1,61 @@
+{
+  "cv_5fold_training_portion": {
+    "logistic_regression": {
+      "accuracy": {
+        "mean": 0.7219,
+        "std": 0.1001
+      },
+      "precision": {
+        "mean": 0.775,
+        "std": 0.0592
+      },
+      "recall": {
+        "mean": 0.7722,
+        "std": 0.1957
+      },
+      "f1": {
+        "mean": 0.7574,
+        "std": 0.1108
+      },
+      "roc_auc": {
+        "mean": 0.803,
+        "std": 0.1035
+      }
+    },
+    "random_forest": {
+      "accuracy": {
+        "mean": 0.6371,
+        "std": 0.0885
+      },
+      "precision": {
+        "mean": 0.6671,
+        "std": 0.054
+      },
+      "recall": {
+        "mean": 0.7944,
+        "std": 0.1259
+      },
+      "f1": {
+        "mean": 0.7206,
+        "std": 0.0745
+      },
+      "roc_auc": {
+        "mean": 0.6548,
+        "std": 0.1385
+      }
+    }
+  },
+  "selected_model": "logistic_regression",
+  "test_metrics_lr": {
+    "accuracy": 0.6875,
+    "precision": 0.7273,
+    "recall": 0.8,
+    "f1": 0.7619,
+    "roc_auc": 0.75
+  },
+  "test_errors": {
+    "total": 5,
+    "fp": 3,
+    "fn": 2
+  }
+}

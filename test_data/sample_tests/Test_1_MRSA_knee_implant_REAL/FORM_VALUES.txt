@@ -1,0 +1,53 @@
+TEST 1: MRSA INFECTION OF A KNEE REPLACEMENT
+Data type: REAL DATASET
+========================================================================
+
+FILES IN THIS FOLDER
+  1_microscopy.png     SIMULATED image
+  2_spectroscopy.csv   REAL Raman spectrum - Bacteria-ID dataset (Ho et al., 2019), held-out test spectrum, isolate 17
+  3_genomics.fasta     REAL genome - BV-BRC 1280.9798, Staphylococcus aureus strain C00003201
+
+HOW TO RUN
+1. Sign in at http://localhost:3000
+2. New Analysis -> Step 1: copy each value from STEP 1 below into the matching field
+3. Step 2: upload 1_microscopy.png
+4. Step 3: upload 2_spectroscopy.csv (a spectrum preview should appear)
+5. Step 4: upload 3_genomics.fasta
+6. Step 5: copy the values from STEP 5 below
+7. Step 6: click "Run Multimodal Analysis"
+
+STEP 1 - SAMPLE INFORMATION (copy and paste)
+  Sample ID                    : PJI-2026-031
+  Study ID                     : BF-TEST-2026
+  Sample Type                  : Implant sonicate
+  Collection date              : 20-10-2026
+  Infection context            : Orthopedic implant
+  Wound / implant context      : Right knee prosthesis, 8 months after total knee arthroplasty
+  Notes                        : Painful right knee 8 months after total knee arthroplasty. Persistent wound drainage, sinus tract present. Joint aspirate and peri-prosthetic tissue sent.
+
+STEP 5 - CLINICAL DATA (copy and paste / select)
+  Infection context            : Orthopedic implant
+  Chronicity / duration (days) : 113
+  Implant present              : Yes
+  Sample site                  : Knee (prosthetic)
+  Previous treatment category  : Antibiotics
+  Previous culture information : Unknown
+  Additional notes             : Female, 48 y. CRP 30.8 mg/L, WBC 5.8, temperature 37.5 C. 3 previous antibiotic courses. Moderate exudate.
+
+WHAT TO CHECK ON THE RESULTS PAGE
+- A probability, a risk category and the DEMO MODE banner appear
+- Multimodal Evidence Overview shows: Microscopy = Available, Spectroscopy = Available, Genomics = Available, Clinical = Available
+- Clinical Context shows the values you entered
+- Download Report produces a PDF
+- The analysis appears under History
+
+IMPORTANT: the website is in demo mode, so the probability is SIMULATED and changes
+on every run. It is not computed from these files. The "known answer" below is what a
+trained model should find, for use once the real model is connected.
+
+KNOWN ANSWER (from the source data)
+  - Organism: Staphylococcus aureus (from the real genome record).
+  - Antibiotic resistance in the source record: methicillin/oxacillin (MRSA) and fluoroquinolones.
+  - Clinical picture: chronic implant infection, typical of a mature biofilm.
+
+The collection date field shows the browser's date format; type the date shown above into it.

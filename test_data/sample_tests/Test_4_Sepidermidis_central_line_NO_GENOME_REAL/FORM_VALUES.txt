@@ -1,0 +1,53 @@
+TEST 4: S. EPIDERMIDIS ON A CENTRAL LINE, GENOME NOT UPLOADED
+Data type: REAL DATASET (missing-data test)
+========================================================================
+
+FILES IN THIS FOLDER
+  1_microscopy.png     SIMULATED image
+  2_spectroscopy.csv   REAL Raman spectrum - Bacteria-ID dataset, held-out test spectrum, isolate 20
+  (no genome)          Skip Step 4 on purpose: sequencing is "still pending". This tests that the site works with missing data.
+
+HOW TO RUN
+1. Sign in at http://localhost:3000
+2. New Analysis -> Step 1: copy each value from STEP 1 below into the matching field
+3. Step 2: upload 1_microscopy.png
+4. Step 3: upload 2_spectroscopy.csv (a spectrum preview should appear)
+5. Step 4: upload 3_genomics.fasta   <-- SKIP this step (no genome file, on purpose)
+6. Step 5: copy the values from STEP 5 below
+7. Step 6: click "Run Multimodal Analysis"
+
+STEP 1 - SAMPLE INFORMATION (copy and paste)
+  Sample ID                    : CVC-2026-015
+  Study ID                     : BF-TEST-2026
+  Sample Type                  : Blood culture
+  Collection date              : 23-10-2026
+  Infection context            : Catheter-associated
+  Wound / implant context      : Tunnelled central venous catheter (removed)
+  Notes                        : Tunnelled CVC for parenteral nutrition, low-grade fevers for 3 weeks. Line removed; sequencing still pending.
+
+STEP 5 - CLINICAL DATA (copy and paste / select)
+  Infection context            : Catheter-associated
+  Chronicity / duration (days) : 48
+  Implant present              : Yes
+  Sample site                  : Leave as "Select..."   (no matching option)
+  Previous treatment category  : None
+  Previous culture information : Unknown
+  Additional notes             : Female, 61 y. CRP 9.4 mg/L, WBC 6.7, temperature 37.6 C. Line in place about 31 months.
+
+WHAT TO CHECK ON THE RESULTS PAGE
+- A probability, a risk category and the DEMO MODE banner appear
+- Multimodal Evidence Overview shows: Microscopy = Available, Spectroscopy = Available, Genomics = Not provided, Clinical = Available
+- Clinical Context shows the values you entered
+- Download Report produces a PDF
+- The analysis appears under History
+
+IMPORTANT: the website is in demo mode, so the probability is SIMULATED and changes
+on every run. It is not computed from these files. The "known answer" below is what a
+trained model should find, for use once the real model is connected.
+
+KNOWN ANSWER (from the source data)
+  - Organism: Staphylococcus epidermidis (the Raman spectrum comes from an S. epidermidis isolate).
+  - Clinical picture: long-term line with low-grade fever, typical of a mature device biofilm.
+  - On the results page, Genomics should show "Not provided".
+
+The collection date field shows the browser's date format; type the date shown above into it.
