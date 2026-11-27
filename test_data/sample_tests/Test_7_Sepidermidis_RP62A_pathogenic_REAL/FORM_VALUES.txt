@@ -10,9 +10,9 @@ FILES IN THIS FOLDER
                        a catheter-associated infection.
 
 WHY THIS TEST
-  This is the genome that the real genomic research model was built for (S. epidermidis).
-  The results page shows a "Genomic Research Model" card with a REAL prediction
-  (pathogenic vs commensal), next to the demo risk estimate.
+  This is the species the trained genomic model was built for (S. epidermidis), so the
+  model runs on it, and the gene screen finds both the resistance gene (mecA) and the
+  biofilm genes (ica).
 
 HOW TO RUN
 1. Sign in at http://localhost:3000
@@ -42,12 +42,18 @@ STEP 5 - CLINICAL DATA (copy and paste / select)
   Additional notes             : Fever with line in place. Repeat blood cultures positive.
 
 WHAT TO CHECK ON THE RESULTS PAGE
-- The demo risk estimate with the DEMO MODE banner (simulated, as for every test)
-- The "Genomic Research Model" card shows a REAL prediction, with genome length ~2.65 Mb and GC ~32%
-- Download Report: the PDF contains a "Genomic research model" section
+- Score: 70% (high risk). The same files always give the same score.
+- Microscopy tile : Biofilm structure
+- Raman tile      : Moderate matrix signal
+- Genome tile     : Resistance + biofilm genes
+- Clinical tile   : 3 of 5 risk factors
+- Download Report: the PDF lists the full measurements (image analysis, Raman peaks,
+  gene screen and clinical risk factors).
+- The analysis appears under History and stays there after a restart.
+- Genomic model (in the PDF report): predicted pathogenic, probability 72%.
 
-RESULT OBSERVED WHEN TESTED
-  Predicted: pathogenic, P(pathogenic) = 0.72  -> matches the known answer.
+The score assumes the clinical values are entered exactly as listed above.
+It is an evidence score, not a clinical diagnosis.
 
 KNOWN ANSWER
   - Organism: Staphylococcus epidermidis RP62A, a well-studied biofilm-forming clinical isolate.

@@ -35,15 +35,18 @@ STEP 5 - CLINICAL DATA (copy and paste / select)
   Additional notes             : Acute wound, healing as expected.
 
 WHAT TO CHECK ON THE RESULTS PAGE
-- A probability, a risk category and the DEMO MODE banner appear
-- Multimodal Evidence Overview shows: Microscopy = Available, Spectroscopy = Available, Genomics = Available, Clinical = Available
-- Clinical Context shows the values you entered
-- Download Report produces a PDF
-- The analysis appears under History
+- Score: 10% (low risk). The same files always give the same score.
+- Microscopy tile : No biofilm structure
+- Raman tile      : Weak matrix signal
+- Genome tile     : No key genes found
+- Clinical tile   : 0 of 5 risk factors
+- Download Report: the PDF lists the full measurements (image analysis, Raman peaks,
+  gene screen and clinical risk factors).
+- The analysis appears under History and stays there after a restart.
+- Genomic model (in the PDF report): not run, because this genome is not S. epidermidis.
 
-IMPORTANT: the website is in demo mode, so the probability is SIMULATED and changes
-on every run. It is not computed from these files. The "known answer" below is what a
-trained model should find, for use once the real model is connected.
+The score assumes the clinical values are entered exactly as listed above.
+It is an evidence score, not a clinical diagnosis.
 
 KNOWN ANSWER (from the source data)
   - Designed to look like NO biofilm: free-floating cells, no matrix. Use it as the comparison for Test 5.

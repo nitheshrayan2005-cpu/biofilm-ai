@@ -15,7 +15,8 @@ Regenerate with `.venv\Scripts\python.exe test_data\generate_test_data.py`.
 
 ## Automated API test
 
-With the backend running:
+With the backend running (the script asks for a doctor username and password, or reads
+`BIOFILM_TEST_USER` / `BIOFILM_TEST_PASSWORD`):
 
 ```powershell
 .venv\Scripts\python.exe test_data\run_e2e_test.py                        # http://localhost:8000
@@ -51,7 +52,7 @@ With the backend running:
 | Previous culture | Positive (pure) |
 
 Run the analysis and check that:
-- the results page shows a probability, a risk category and a **DEMO MODE** banner
+- the results page shows a score, a risk category and one verdict for each evidence type
 - the PDF report downloads
 - the analysis appears under **History**
 

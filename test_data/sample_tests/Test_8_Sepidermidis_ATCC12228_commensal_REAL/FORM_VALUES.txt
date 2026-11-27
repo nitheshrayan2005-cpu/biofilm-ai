@@ -40,14 +40,22 @@ STEP 5 - CLINICAL DATA (copy and paste / select)
   Additional notes             : Screening sample, patient well.
 
 WHAT TO CHECK ON THE RESULTS PAGE
-- The demo risk estimate with the DEMO MODE banner (simulated, as for every test)
-- The "Genomic Research Model" card shows a REAL prediction, with genome length ~2.50 Mb and GC ~32%
+- Score: 50% (intermediate risk). The same files always give the same score.
+- Microscopy tile : Biofilm structure
+- Raman tile      : Moderate matrix signal
+- Genome tile     : No key genes found
+- Clinical tile   : 1 of 5 risk factors
+- Download Report: the PDF lists the full measurements (image analysis, Raman peaks,
+  gene screen and clinical risk factors).
+- The analysis appears under History and stays there after a restart.
+- Genomic model (in the PDF report): predicted pathogenic, probability 97%.
 
-RESULT OBSERVED WHEN TESTED
-  Predicted: pathogenic, P(pathogenic) = 0.97  -> does NOT match the known answer (commensal).
-  This is a false positive, the same kind of error the model made on its own test set
-  (3 of 6 commensal test isolates were also predicted pathogenic). It shows why the model
-  is a research tool trained on only 103 genomes, and why more data is needed.
+NOTE: the genomic model's 'pathogenic' call is a false positive for this commensal
+strain, the same kind of error it made on 3 of 6 commensal test genomes. The gene
+screen is correct: no mecA and no ica biofilm genes.
+
+The score assumes the clinical values are entered exactly as listed above.
+It is an evidence score, not a clinical diagnosis.
 
 KNOWN ANSWER
   - Organism: Staphylococcus epidermidis ATCC 12228, commensal reference strain.
