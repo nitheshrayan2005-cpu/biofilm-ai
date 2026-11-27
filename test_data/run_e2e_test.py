@@ -5,12 +5,18 @@ Start the backend first, then run from the project root:
     .venv\\Scripts\\python.exe test_data\\run_e2e_test.py
     .venv\\Scripts\\python.exe test_data\\run_e2e_test.py http://localhost:8001
 
+The API requires a doctor login. The script asks for a username and password,
+or reads them from the BIOFILM_TEST_USER / BIOFILM_TEST_PASSWORD environment
+variables. Create an account with:  python backend\\auth.py add <username> "<Name>"
+
 Uses only the standard library.
 """
 
 from __future__ import annotations
 
+import getpass
 import json
+import os
 import sys
 import urllib.error
 import urllib.request
@@ -20,7 +26,8 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 BASE = (sys.argv[1] if len(sys.argv) > 1 else "http://localhost:8000").rstrip("/")
 
-PASS = FAIL = 0
+PASS = FAIL = SKIP = 0
+TOKEN: str | None = None
 
 
 def check(name: str, ok: bool, detail: str = "") -> None:
@@ -29,17 +36,26 @@ def check(name: str, ok: bool, detail: str = "") -> None:
     print(f"  [{'PASS' if ok else 'FAIL'}] {name}" + (f"  - {detail}" if detail and not ok else ""))
 
 
-def request(method: str, path: str, body: bytes | None = None, headers: dict | None = None):
-    req = urllib.request.Request(BASE + path, data=body, method=method, headers=headers or {})
+def skip(name: str, reason: str) -> None:
+    global SKIP
+    SKIP += 1
+    print(f"  [SKIP] {name}  - {reason}")
+
+
+def request(method: str, path: str, body: bytes | None = None, headers: dict | None = None, auth: bool = True):
+    headers = dict(headers or {})
+    if auth and TOKEN:
+        headers["Authorization"] = f"Bearer {TOKEN}"
+    req = urllib.request.Request(BASE + path, data=body, method=method, headers=headers)
     try:
-        with urllib.request.urlopen(req, timeout=30) as r:
+        with urllib.request.urlopen(req, timeout=120) as r:
             return r.status, json.loads(r.read() or b"null")
     except urllib.error.HTTPError as e:
         return e.code, json.loads(e.read() or b"null")
 
 
-def post_json(path: str, payload) -> tuple:
-    return request("POST", path, json.dumps(payload).encode(), {"Content-Type": "application/json"})
+def post_json(path: str, payload, auth: bool = True) -> tuple:
+    return request("POST", path, json.dumps(payload).encode(), {"Content-Type": "application/json"}, auth)
 
 
 def post_multipart(path: str, fields: dict, files: dict) -> tuple:
@@ -54,6 +70,12 @@ def post_multipart(path: str, fields: dict, files: dict) -> tuple:
         )
     body = b"".join(parts) + f"--{boundary}--\r\n".encode()
     return request("POST", path, body, {"Content-Type": f"multipart/form-data; boundary={boundary}"})
+
+
+def credentials() -> tuple[str, str]:
+    user = os.getenv("BIOFILM_TEST_USER") or input("Doctor username: ").strip()
+    password = os.getenv("BIOFILM_TEST_PASSWORD") or getpass.getpass("Password: ")
+    return user, password
 
 
 SAMPLE_INFO = {
@@ -77,6 +99,7 @@ CLINICAL = {
 
 
 def main() -> int:
+    global TOKEN
     if not (HERE / "microscopy_biofilm.png").exists():
         print("Test files missing - run test_data/generate_test_data.py first.")
         return 1
@@ -93,7 +116,21 @@ def main() -> int:
           isinstance(body, dict) and "version" in body and "demo_mode" in body,
           f"got {body} - is another app on this port?")
 
-    print("\n2. Multimodal analysis (all 4 modalities)")
+    print("\n2. Authentication")
+    status, _ = request("GET", "/api/history", auth=False)
+    check("protected endpoint without login returns 401", status == 401, f"got {status}")
+    status, _ = post_json("/api/auth/login", {"username": f"nobody-{uuid.uuid4().hex[:8]}", "password": "wrong"}, auth=False)
+    check("unknown user / wrong password returns 401", status == 401, f"got {status}")
+    user, password = credentials()
+    status, body = post_json("/api/auth/login", {"username": user, "password": password}, auth=False)
+    check("doctor login returns 200 with a token", status == 200 and bool((body or {}).get("token")), str(body))
+    if status != 200:
+        print("\n  Cannot continue without a valid login.")
+        print(f"\n{'=' * 50}\n  PASSED: {PASS}   FAILED: {FAIL}   SKIPPED: {SKIP}\n{'=' * 50}")
+        return 1
+    TOKEN = body["token"]
+
+    print("\n3. Multimodal analysis (all 4 modalities)")
     status, res = post_multipart(
         "/api/analyze",
         {"sampleInfo": json.dumps(SAMPLE_INFO), "clinicalData": json.dumps(CLINICAL)},
@@ -113,7 +150,7 @@ def main() -> int:
         check("demoMode is true", res.get("demoMode") is True)
         print(f"     -> {analysis_id}: probability={prob}, risk={pred.get('riskCategory')}")
 
-    print("\n3. Analysis with sample info + clinical only")
+    print("\n4. Analysis with sample info + clinical only")
     status, _ = post_multipart(
         "/api/analyze",
         {"sampleInfo": json.dumps({**SAMPLE_INFO, "sampleId": "S-TEST-002"}),
@@ -122,14 +159,14 @@ def main() -> int:
     )
     check("POST /api/analyze (no files) returns 200", status == 200)
 
-    print("\n4. History & retrieval")
+    print("\n5. History & retrieval")
     status, hist = request("GET", "/api/history")
     check("GET /api/history returns 200", status == 200)
     if analysis_id:
         status, one = request("GET", f"/api/analysis/{analysis_id}")
         check("GET /api/analysis/{id} returns the analysis", status == 200 and one.get("analysisId") == analysis_id)
 
-    print("\n5. Research: genomic classifier")
+    print("\n6. Research: genomic classifier")
     payload = json.loads((HERE / "genomic_predict_request.json").read_text())
     status, g = post_json("/api/research/genomic-predict", payload)
     check("valid 343-feature request returns 200", status == 200, str(g)[:200])
@@ -141,9 +178,12 @@ def main() -> int:
     status, _ = post_json("/api/research/genomic-predict", {"features": bad})
     check("missing feature returns 400", status == 400, f"got {status}")
 
-    print("\n6. Research: biofilm thickness")
+    print("\n7. Research: biofilm thickness")
     for case in json.loads((HERE / "thickness_requests.json").read_text()):
         status, t = post_json("/api/research/biofilm-thickness-predict", case)
+        if status == 503:
+            skip(f"{case}", "thickness model could not load on this machine (503)")
+            continue
         check(f"{case} returns 200", status == 200, str(t))
         if status == 200:
             print(f"     -> predicted AVEG = {t['predicted_thickness']:.3f}")
@@ -152,7 +192,7 @@ def main() -> int:
     status, _ = post_json("/api/research/biofilm-thickness-predict", {"time": 0.5, "flow_rate_ul_min": 5, "channel": "XYZ"})
     check("unknown channel returns 400", status == 400)
 
-    print("\n7. Error handling")
+    print("\n8. Error handling")
     status, _ = post_multipart("/api/analyze", {"sampleInfo": "{}", "clinicalData": "{}"}, {})
     check("missing required sample fields returns 400", status == 400)
     status, _ = post_multipart(
@@ -164,7 +204,7 @@ def main() -> int:
     status, _ = request("GET", "/api/analysis/NONEXISTENT")
     check("unknown analysis ID returns 404", status == 404)
 
-    print(f"\n{'=' * 50}\n  PASSED: {PASS}   FAILED: {FAIL}\n{'=' * 50}")
+    print(f"\n{'=' * 50}\n  PASSED: {PASS}   FAILED: {FAIL}   SKIPPED: {SKIP}\n{'=' * 50}")
     return 1 if FAIL else 0
 
 

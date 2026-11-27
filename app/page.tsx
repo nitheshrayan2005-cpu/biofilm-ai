@@ -2,13 +2,13 @@
 
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { getToken } from '@/lib/auth';
+import { LOGIN_REQUIRED, getToken } from '@/lib/auth';
 
-// The site opens on sign-in; signed-in doctors go straight to a new analysis.
+// The site opens on a new analysis (or on sign-in when login is required).
 export default function RootPage() {
   const router = useRouter();
   useEffect(() => {
-    router.replace(getToken() ? '/analyze' : '/login');
+    router.replace(!LOGIN_REQUIRED || getToken() ? '/analyze' : '/login');
   }, [router]);
   return null;
 }

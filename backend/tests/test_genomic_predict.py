@@ -25,8 +25,11 @@ import sys
 import urllib.error
 import urllib.request
 
-BASE = "http://localhost:8000"
+BASE = (sys.argv[1] if len(sys.argv) > 1 else "http://localhost:8000").rstrip("/")
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+# The check marks below need UTF-8; the Windows console defaults to cp1252.
+sys.stdout.reconfigure(encoding="utf-8")
 
 PASS = 0
 FAIL = 0
@@ -69,10 +72,14 @@ def post(path: str, body: dict):
 
 
 def load_real_features():
-    import pandas as pd
-    feat = pd.read_csv(os.path.join(os.path.dirname(ROOT), "uploads", "BiofilmAI_genomic_features.csv"))
+    """First isolate of the training CSV when it is available, else the bundled test request."""
     schema = json.load(open(os.path.join(ROOT, "backend", "ml", "artifacts", "feature_schema.json")))["features"]
-    row = feat.iloc[0]
+    csv_path = os.path.join(os.path.dirname(ROOT), "uploads", "BiofilmAI_genomic_features.csv")
+    if not os.path.isfile(csv_path):
+        request = json.load(open(os.path.join(ROOT, "test_data", "genomic_predict_request.json")))
+        return {c: float(request["features"][c]) for c in schema}
+    import pandas as pd
+    row = pd.read_csv(csv_path).iloc[0]
     return {c: float(row[c]) for c in schema}
 
 

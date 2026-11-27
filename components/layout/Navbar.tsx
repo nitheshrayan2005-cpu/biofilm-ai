@@ -8,7 +8,7 @@ import { Logo } from './Logo';
 import { Button } from '@/components/ui/Button';
 import { cn } from '@/lib/utils';
 import { useDoctor } from '@/components/AuthGate';
-import { clearSession, initials } from '@/lib/auth';
+import { LOGIN_REQUIRED, clearSession, initials } from '@/lib/auth';
 
 const navLinks = [
   { href: '/dashboard', label: 'Dashboard' },
@@ -122,14 +122,18 @@ export function Navbar() {
                   <Link href="/settings" className="flex items-center gap-2 px-3 py-2 text-sm text-ink hover:bg-surface-muted">
                     <Settings className="h-4 w-4 text-ink-secondary" /> Settings
                   </Link>
-                  <div className="border-t border-border-subtle my-1" />
-                  <button
-                    type="button"
-                    onClick={signOut}
-                    className="w-full flex items-center gap-2 px-3 py-2 text-sm text-ink hover:bg-surface-muted"
-                  >
-                    <LogOut className="h-4 w-4 text-ink-secondary" /> Sign out
-                  </button>
+                  {LOGIN_REQUIRED && (
+                    <>
+                      <div className="border-t border-border-subtle my-1" />
+                      <button
+                        type="button"
+                        onClick={signOut}
+                        className="w-full flex items-center gap-2 px-3 py-2 text-sm text-ink hover:bg-surface-muted"
+                      >
+                        <LogOut className="h-4 w-4 text-ink-secondary" /> Sign out
+                      </button>
+                    </>
+                  )}
                 </div>
               )}
             </div>
@@ -180,11 +184,13 @@ export function Navbar() {
                     <User className="h-4 w-4" /> {doctor.name} · Settings
                   </span>
                 </Link>
-                <button type="button" onClick={signOut} className="px-3 py-2 text-sm text-ink text-left">
-                  <span className="inline-flex items-center gap-2">
-                    <LogOut className="h-4 w-4" /> Sign out
-                  </span>
-                </button>
+                {LOGIN_REQUIRED && (
+                  <button type="button" onClick={signOut} className="px-3 py-2 text-sm text-ink text-left">
+                    <span className="inline-flex items-center gap-2">
+                      <LogOut className="h-4 w-4" /> Sign out
+                    </span>
+                  </button>
+                )}
               </>
             ) : (
               <Link href="/login" className="px-3 py-2 text-sm text-ink">

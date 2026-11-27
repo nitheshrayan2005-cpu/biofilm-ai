@@ -21,20 +21,61 @@ import { StatusBanner } from '@/components/ui/Modal';
 import { DemoBadge } from '@/components/ui/DemoBadge';
 import { formatDateTime } from '@/lib/utils';
 import { AnalysisResponse } from '@/lib/types';
+import { getAnalysis } from '@/lib/api';
 import { clinicalLabel, RISK_MEANING } from '@/lib/clinicalLabels';
 
 export default function ResultsPage() {
   const [result, setResult] = useState<AnalysisResponse | null>(null);
   const [requestInfo, setRequestInfo] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    // /results?id=... shows that analysis (opened from History); plain /results
+    // shows the last analysis run in this tab.
+    const id = new URLSearchParams(window.location.search).get('id');
+    let last: AnalysisResponse | null = null;
     try {
       const r = sessionStorage.getItem('biofilm-last-result');
-      const ri = sessionStorage.getItem('biofilm-last-request');
-      if (r) setResult(JSON.parse(r));
-      if (ri) setRequestInfo(JSON.parse(ri));
-    } catch (e) {}
+      last = r ? JSON.parse(r) : null;
+    } catch {}
+
+    if (!id || last?.analysisId === id) {
+      setResult(last);
+      try {
+        const ri = sessionStorage.getItem('biofilm-last-request');
+        if (ri) setRequestInfo(JSON.parse(ri));
+      } catch {}
+      setLoading(false);
+      return;
+    }
+
+    let cancelled = false;
+    getAnalysis(id)
+      .catch(() => null)
+      .then((analysis) => {
+        if (cancelled) return;
+        if (analysis) {
+          let ri: string | null = null;
+          try {
+            ri = localStorage.getItem(`biofilm-request-${id}`);
+          } catch {}
+          // The Download Report button reads the open analysis from session storage.
+          try {
+            sessionStorage.setItem('biofilm-last-result', JSON.stringify(analysis));
+            if (ri) sessionStorage.setItem('biofilm-last-request', ri);
+            else sessionStorage.removeItem('biofilm-last-request');
+          } catch {}
+          setResult(analysis);
+          setRequestInfo(ri ? JSON.parse(ri) : null);
+        }
+        setLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
   }, []);
+
+  if (loading) return null;
 
   if (!result) {
     return (

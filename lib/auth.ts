@@ -14,11 +14,16 @@ interface Session {
 const STORAGE_KEY = 'biofilm-auth';
 const AUTH_EVENT = 'biofilm-auth-change';
 
+// Doctor sign-in is required. Set to false (and BIOFILM_REQUIRE_LOGIN=false on
+// the backend) to open every page and run the app as GUEST_DOCTOR.
+export const LOGIN_REQUIRED = true;
+const GUEST_DOCTOR: Doctor = { username: 'guest', name: 'Researcher' };
+
 // Pages anyone can open without signing in.
 export const PUBLIC_PATHS = ['/', '/login', '/welcome', '/about', '/research'];
 
 export function isPublicPath(pathname: string): boolean {
-  return PUBLIC_PATHS.includes(pathname);
+  return !LOGIN_REQUIRED || PUBLIC_PATHS.includes(pathname);
 }
 
 export function getSession(): Session | null {
@@ -36,6 +41,7 @@ export function getToken(): string | null {
 }
 
 export function getDoctor(): Doctor | null {
+  if (!LOGIN_REQUIRED) return GUEST_DOCTOR;
   return getSession()?.doctor ?? null;
 }
 
@@ -51,6 +57,9 @@ export function clearSession() {
     localStorage.removeItem(STORAGE_KEY);
     sessionStorage.removeItem('biofilm-last-result');
     sessionStorage.removeItem('biofilm-last-request');
+    Object.keys(localStorage)
+      .filter((key) => key.startsWith('biofilm-request-'))
+      .forEach((key) => localStorage.removeItem(key));
   } catch {}
   window.dispatchEvent(new Event(AUTH_EVENT));
 }

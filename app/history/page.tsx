@@ -186,7 +186,7 @@ function HistoryRow({ row }: { row: AnalysisSummary }) {
       <Td className="text-ink-secondary">{formatDateTime(row.createdAt)}</Td>
       <Td className="text-right">
         <Link
-          href="/results"
+          href={`/results?id=${encodeURIComponent(row.analysisId)}`}
           className="inline-flex items-center gap-1 text-[12px] font-medium text-primary hover:text-primary-700"
         >
           Open <ArrowUpRight className="h-3.5 w-3.5" />

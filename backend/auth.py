@@ -35,6 +35,11 @@ SECRET_FILE = BASE_DIR / ".auth_secret"
 TOKEN_TTL_SECONDS = int(os.getenv("BIOFILM_SESSION_HOURS", "12")) * 3600
 PBKDF2_ITERATIONS = 200_000
 
+# Doctor sign-in is required by default. Set BIOFILM_REQUIRE_LOGIN=false (and
+# LOGIN_REQUIRED = false in lib/auth.ts) to run every request as GUEST_DOCTOR.
+REQUIRE_LOGIN = os.getenv("BIOFILM_REQUIRE_LOGIN", "true").lower() == "true"
+GUEST_DOCTOR = {"username": "guest", "name": "Researcher"}
+
 # Lock an account for a while after repeated wrong passwords.
 MAX_FAILED_ATTEMPTS = 5
 LOCKOUT_SECONDS = 5 * 60
@@ -152,6 +157,8 @@ def verify_token(token: str) -> Optional[dict]:
 
 def current_doctor(authorization: Optional[str] = Header(None)) -> dict:
     """FastAPI dependency: the signed-in doctor, or 401."""
+    if not REQUIRE_LOGIN:
+        return GUEST_DOCTOR
     if not authorization or not authorization.lower().startswith("bearer "):
         raise HTTPException(status_code=401, detail="Please sign in.")
     doctor = verify_token(authorization[7:].strip())

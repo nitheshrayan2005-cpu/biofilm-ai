@@ -10,7 +10,7 @@ import { Button } from '@/components/ui/Button';
 import { StatusBanner } from '@/components/ui/Modal';
 import { Logo } from '@/components/layout/Logo';
 import { login } from '@/lib/api';
-import { getToken, isPublicPath } from '@/lib/auth';
+import { LOGIN_REQUIRED, getToken, isPublicPath } from '@/lib/auth';
 
 function nextPath(): string {
   const next = new URLSearchParams(window.location.search).get('next') || '';
@@ -27,7 +27,7 @@ export default function LoginPage() {
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
-    if (getToken()) router.replace(nextPath());
+    if (!LOGIN_REQUIRED || getToken()) router.replace(nextPath());
   }, [router]);
 
   async function onSubmit(e: React.FormEvent) {

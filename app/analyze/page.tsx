@@ -67,12 +67,17 @@ export default function AnalyzePage() {
         }),
         new Promise((resolve) => setTimeout(resolve, MIN_ANALYSIS_MS)),
       ]);
-      sessionStorage.setItem('biofilm-last-result', JSON.stringify(result));
-      sessionStorage.setItem('biofilm-last-request', JSON.stringify({
+      const requestInfo = JSON.stringify({
         sampleInfo: state.sampleInfo,
         clinicalData: state.clinicalData,
-      }));
-      router.push('/results');
+      });
+      sessionStorage.setItem('biofilm-last-result', JSON.stringify(result));
+      sessionStorage.setItem('biofilm-last-request', requestInfo);
+      // The backend does not return the clinical form, so keep it for reopening from History.
+      try {
+        localStorage.setItem(`biofilm-request-${result.analysisId}`, requestInfo);
+      } catch {}
+      router.push(`/results?id=${encodeURIComponent(result.analysisId)}`);
     } catch (err) {
       alert('AI analysis is temporarily unavailable. Please try again.');
     } finally {

@@ -22,7 +22,16 @@ from __future__ import annotations
 import os
 import sys
 
-import torch
+# The check marks below need UTF-8; the Windows console defaults to cp1252.
+sys.stdout.reconfigure(encoding="utf-8")
+
+try:
+    import torch
+except ImportError:
+    # PyTorch is only in backend/ml/requirements-ml.txt; the demo server does not need it.
+    print("SKIPPED: PyTorch is not installed. Install it with:")
+    print("    pip install -r backend/ml/requirements-ml.txt")
+    sys.exit(0)
 
 # Keep single-threaded to stay within the sandbox memory budget
 torch.set_num_threads(1)
