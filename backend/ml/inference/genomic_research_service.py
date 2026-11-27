@@ -22,6 +22,7 @@ from __future__ import annotations
 
 import json
 import math
+from itertools import product
 from pathlib import Path
 from typing import Dict, List, Union
 
@@ -163,6 +164,112 @@ class GenomicResearchService:
             "experiment_target": EXPERIMENT_TARGET,
             "research_disclaimer": DISCLAIMER,
         }
+
+    # ── Applicability ────────────────────────────────────────────────────
+
+    def scope_check(self, features: Dict[str, float]) -> List[str]:
+        """
+        Reasons the genome lies outside the training data (empty = in scope).
+
+        The model was trained only on S. epidermidis assemblies, whose GC
+        fraction is extremely tight (0.320 ± 0.001) and length ~2.6 Mb, so a
+        GC or length far from the training distribution means another species
+        or a partial / synthetic sequence, and the prediction would be
+        meaningless.
+        """
+        reasons = []
+        for name, label in (("GC_fraction", "GC content"), ("sequence_length", "genome length")):
+            i = self._features.index(name)
+            z = (features[name] - self._mean[i]) / self._scale[i]
+            if abs(z) > SCOPE_MAX_Z:
+                reasons.append(f"{label} is {abs(z):.0f} standard deviations from the training genomes")
+        if features["N_fraction"] > MAX_N_FRACTION:
+            reasons.append("too many ambiguous (N) bases")
+        return reasons
+
+    def predict_from_fasta(self, text: str) -> Dict:
+        """Extract features from a FASTA genome, check scope, then predict."""
+        features, contigs = fasta_to_features(text)
+        summary = {
+            "sequence_length": int(features["sequence_length"]),
+            "gc_fraction": round(features["GC_fraction"], 4),
+            "contigs": contigs,
+            "model_version": MODEL_VERSION,
+            "research_disclaimer": DISCLAIMER,
+        }
+        reasons = self.scope_check(features)
+        if reasons:
+            return {**summary, "status": "out_of_scope", "reasons": reasons}
+        return {**summary, "status": "completed", **self.predict(features)}
+
+
+# ── FASTA → 343 training features ────────────────────────────────────────
+#
+# Matches the training CSV: per-k normalised overlapping k-mer frequencies
+# (k = 1..4, ACGT only, never spanning contig boundaries or non-ACGT bases),
+# raw sequence_length in bp, and GC / N fractions over all bases.
+
+SCOPE_MAX_Z = 4.0
+MAX_N_FRACTION = 0.01
+_CODE = np.full(256, -1, dtype=np.int64)
+for _i, _ch in enumerate(b"ACGT"):
+    _CODE[_ch] = _i
+
+
+def parse_fasta(text: str) -> List[str]:
+    """Return the sequences in a FASTA (or raw sequence) text, upper-cased."""
+    contigs, current = [], []
+    for line in text.splitlines():
+        line = line.strip()
+        if not line:
+            continue
+        if line.startswith(">"):
+            if current:
+                contigs.append("".join(current))
+            current = []
+        else:
+            current.append(line.upper())
+    if current:
+        contigs.append("".join(current))
+    if not contigs:
+        raise ValueError("No sequence found in the genome file.")
+    allowed = set("ACGTNRYKMSWBDHV")
+    if any(set(c) - allowed for c in contigs):
+        raise ValueError("Genome file is not a nucleotide FASTA sequence.")
+    return contigs
+
+
+def fasta_to_features(text: str) -> tuple[Dict[str, float], int]:
+    """Compute the 343 named features and return them with the contig count."""
+    contigs = parse_fasta(text)
+    counts = {k: np.zeros(4 ** k, dtype=np.int64) for k in (1, 2, 3, 4)}
+    total = gc = n_bases = 0
+    for seq in contigs:
+        raw = np.frombuffer(seq.encode("ascii"), dtype=np.uint8)
+        codes = _CODE[raw]
+        total += raw.size
+        gc += int(np.count_nonzero((raw == ord("G")) | (raw == ord("C"))))
+        n_bases += int(np.count_nonzero(codes < 0))
+        for k in counts:
+            if codes.size < k:
+                continue
+            idx = np.zeros(codes.size - k + 1, dtype=np.int64)
+            valid = np.ones(codes.size - k + 1, dtype=bool)
+            for j in range(k):
+                window = codes[j:codes.size - k + 1 + j]
+                idx = idx * 4 + np.maximum(window, 0)
+                valid &= window >= 0
+            counts[k] += np.bincount(idx[valid], minlength=4 ** k)
+
+    features: Dict[str, float] = {}
+    for k, vec in counts.items():
+        freqs = vec / max(int(vec.sum()), 1)
+        for i, kmer in enumerate(product("ACGT", repeat=k)):
+            features["kmer_" + "".join(kmer)] = float(freqs[i])
+    features["sequence_length"] = float(total)
+    features["GC_fraction"] = gc / total
+    features["N_fraction"] = n_bases / total
+    return features, len(contigs)
 
 
 # Module-level singleton (loaded lazily on first use)

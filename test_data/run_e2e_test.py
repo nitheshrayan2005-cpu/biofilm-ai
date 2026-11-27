@@ -147,8 +147,50 @@ def main() -> int:
         check("4 modalities in response", len(res.get("modalities", {})) == 4, str(res.get("modalities", {}).keys()))
         check("probability between 0 and 1", isinstance(prob, (int, float)) and 0 <= prob <= 1, str(prob))
         check("risk category valid", pred.get("riskCategory") in {"low", "intermediate", "high"})
-        check("demoMode is true", res.get("demoMode") is True)
-        print(f"     -> {analysis_id}: probability={prob}, risk={pred.get('riskCategory')}")
+        check("result is the rule-based evidence score", res.get("modelMode") == "evidence_score", str(res.get("modelMode")))
+        ev = res.get("evidence") or {}
+        check("evidence measured for all 4 modalities", set(ev) == {"microscopy", "spectroscopy", "genomics", "clinical"}, str(ev.keys()))
+        check("key findings listed", len(res.get("findings") or []) > 0)
+        parts = res.get("scoreBreakdown") or []
+        check("score equals the average of its indicators",
+              bool(parts) and abs(sum(p["indicator"] for p in parts) / len(parts) - prob) < 0.01, str(parts))
+        print(f"     -> {analysis_id}: score={prob}, risk={pred.get('riskCategory')}")
+        status, again = post_multipart(
+            "/api/analyze",
+            {"sampleInfo": json.dumps(SAMPLE_INFO), "clinicalData": json.dumps(CLINICAL)},
+            {"microscopy": HERE / "microscopy_biofilm.png",
+             "spectroscopy": HERE / "spectroscopy_raman.csv",
+             "genomics": HERE / "genomics_isolate.fasta"},
+        )
+        check("same files give the same score", status == 200 and again["prediction"]["biofilmProbability"] == prob)
+
+    print("\n3b. Evidence from real genomes and images")
+    cases = [
+        ("Test_1_MRSA_knee_implant_REAL", True, True),
+        ("Test_8_Sepidermidis_ATCC12228_commensal_REAL", False, False),
+    ]
+    for folder, mec, ica in cases:
+        genome = HERE / "sample_tests" / folder / "3_genomics.fasta"
+        if not genome.exists():
+            skip(f"{folder} genome", "sample folder not present")
+            continue
+        status, res = post_multipart(
+            "/api/analyze",
+            {"sampleInfo": json.dumps({**SAMPLE_INFO, "sampleId": folder[:20]}), "clinicalData": json.dumps(CLINICAL)},
+            {"genomics": genome},
+        )
+        g = ((res or {}).get("evidence") or {}).get("genomics") or {}
+        check(f"{folder}: mecA {'found' if mec else 'absent'}, ica {'found' if ica else 'absent'}",
+              status == 200 and g.get("mecA") is mec and g.get("ica_operon") is ica, str({k: g.get(k) for k in ('mecA', 'ica_operon')}))
+    for case, pattern in (("case_1_mature_implant_biofilm", "dense_clusters"), ("case_3_planktonic_no_biofilm", "scattered")):
+        image = HERE / "demo_samples" / case / "microscopy.png"
+        status, res = post_multipart(
+            "/api/analyze",
+            {"sampleInfo": json.dumps({**SAMPLE_INFO, "sampleId": case[:20]}), "clinicalData": json.dumps(CLINICAL)},
+            {"microscopy": image},
+        )
+        m = ((res or {}).get("evidence") or {}).get("microscopy") or {}
+        check(f"{case}: microscopy pattern is {pattern}", status == 200 and m.get("pattern") == pattern, str(m.get("pattern")))
 
     print("\n4. Analysis with sample info + clinical only")
     status, _ = post_multipart(

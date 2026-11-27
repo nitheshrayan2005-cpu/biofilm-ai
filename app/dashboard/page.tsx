@@ -27,8 +27,7 @@ import { Card, CardHeader, CardTitle, CardDescription } from '@/components/ui/Ca
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
 import { StatusBanner } from '@/components/ui/Modal';
-import { DemoBadge } from '@/components/ui/DemoBadge';
-import { generateActivitySeries, MOCK_HISTORY } from '@/lib/mockData';
+import { AnalysisSummary } from '@/lib/types';
 import { getAnalysisHistory } from '@/lib/api';
 import { formatRelative } from '@/lib/utils';
 import { useDoctor } from '@/components/AuthGate';
@@ -36,7 +35,7 @@ import { useDoctor } from '@/components/AuthGate';
 export default function DashboardPage() {
   const doctor = useDoctor();
   const [mounted, setMounted] = useState(false);
-  const [history, setHistory] = useState(MOCK_HISTORY);
+  const [history, setHistory] = useState<AnalysisSummary[]>([]);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -44,16 +43,12 @@ export default function DashboardPage() {
     // Load real history from backend
     setLoading(true);
     getAnalysisHistory()
-      .then((data) => {
-        if (data.length > 0) {
-          setHistory(data);
-        }
-      })
+      .then((data) => setHistory(data))
       .catch(() => {})
       .finally(() => setLoading(false));
   }, []);
 
-  const series = mounted ? generateActivitySeries() : [];
+  const series = mounted ? activitySeries(history) : [];
   const total = history.length;
   const high = history.filter((h) => h.prediction?.riskCategory === 'high').length;
   const avgConfidence = history.length
@@ -63,6 +58,8 @@ export default function DashboardPage() {
           100
       )
     : 0;
+  const weekAgo = Date.now() - 7 * 24 * 3600 * 1000;
+  const lastWeek = history.filter((h) => new Date(h.createdAt).getTime() >= weekAgo).length;
   const recent = [...history]
     .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
     .slice(0, 6);
@@ -90,37 +87,33 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      <div className="mb-6">
-        <DemoBadge />
-      </div>
-
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         <MetricCard
           icon={FileBarChart2}
           label="Total Analyses"
           value={total.toString()}
-          sub="Lifetime demo dataset"
+          sub="All saved analyses"
           accent="primary"
         />
         <MetricCard
           icon={AlertTriangle}
-          label="High-Risk Predictions"
+          label="High-Risk Results"
           value={high.toString()}
           sub={`${Math.round((high / total) * 100) || 0}% of total`}
           accent="danger"
         />
         <MetricCard
           icon={TrendingUp}
-          label="Avg. Model Confidence"
+          label="Average Score"
           value={`${avgConfidence}%`}
-          sub="Mean predicted probability"
+          sub="Mean evidence score"
           accent="secondary"
         />
         <MetricCard
           icon={Clock}
           label="Recent Activity"
-          value={recent.length.toString()}
-          sub="Last 7 days"
+          value={lastWeek.toString()}
+          sub="Analyses in the last 7 days"
           accent="warning"
         />
       </div>
@@ -132,7 +125,6 @@ export default function DashboardPage() {
               <CardTitle>Analysis Activity</CardTitle>
               <CardDescription>Number of analyses performed over the past two weeks.</CardDescription>
             </div>
-            <Badge variant="info" size="sm">Demo data</Badge>
           </CardHeader>
           <div className="h-72 mt-2">
             <ResponsiveContainer width="100%" height="100%">
@@ -158,8 +150,8 @@ export default function DashboardPage() {
         <Card>
           <CardHeader>
             <div>
-              <CardTitle>Prediction Distribution</CardTitle>
-              <CardDescription>Categorical breakdown of model outputs.</CardDescription>
+              <CardTitle>Risk Distribution</CardTitle>
+              <CardDescription>Risk categories of all saved analyses.</CardDescription>
             </div>
           </CardHeader>
           <div className="h-72 flex items-center justify-center">
@@ -216,12 +208,19 @@ export default function DashboardPage() {
                 <Th>Sample</Th>
                 <Th>Type</Th>
                 <Th>Modalities</Th>
-                <Th>Probability</Th>
+                <Th>Score</Th>
                 <Th>Status</Th>
                 <Th>When</Th>
               </tr>
             </thead>
             <tbody>
+              {recent.length === 0 && (
+                <tr>
+                  <td colSpan={7} className="px-5 py-8 text-center text-sm text-ink-secondary">
+                    No analyses yet. <Link href="/analyze" className="text-primary font-medium">Run your first analysis</Link>.
+                  </td>
+                </tr>
+              )}
               {recent.map((row) => (
                 <tr key={row.analysisId} className="border-b border-border-subtle/60 hover:bg-surface-muted/40">
                   <Td mono>{row.analysisId}</Td>
@@ -255,6 +254,24 @@ export default function DashboardPage() {
 
     </div>
   );
+}
+
+// Analyses and high-risk results per day over the last 14 days.
+function activitySeries(history: AnalysisSummary[]) {
+  const days = [...Array(14)].map((_, i) => {
+    const d = new Date();
+    d.setHours(0, 0, 0, 0);
+    d.setDate(d.getDate() - (13 - i));
+    return d;
+  });
+  return days.map((d) => {
+    const same = history.filter((h) => new Date(h.createdAt).toDateString() === d.toDateString());
+    return {
+      date: `${d.getDate()}/${d.getMonth() + 1}`,
+      analyses: same.length,
+      high: same.filter((h) => h.prediction?.riskCategory === 'high').length,
+    };
+  });
 }
 
 function MetricCard({ icon: Icon, label, value, sub, accent }: any) {

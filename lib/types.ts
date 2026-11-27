@@ -71,6 +71,76 @@ export interface PredictionResult {
   riskCategory: RiskCategory;
 }
 
+// ── Measured evidence (backend/evidence.py) ──────────────────────────────
+
+export interface MicroscopyEvidence {
+  stain: string;
+  coverage_pct: number;
+  cluster_count: number;
+  micro_colony_count: number;
+  largest_cluster_pct: number;
+  clustered_biomass_pct: number;
+  pattern: 'dense_clusters' | 'micro_colonies' | 'scattered';
+  pattern_text: string;
+  live_pct: number | null;
+  matrix_pct: number | null;
+  overlay_png: string;
+  indicator: number;
+}
+
+export interface SpectrumEvidence {
+  range_cm: [number, number];
+  points: number;
+  snr: number;
+  quality: 'good' | 'fair' | 'poor';
+  peaks: { wavenumber: number; intensity: number; assignment: string }[];
+  matrix_ratio: number | null;
+  matrix_level: 'strong' | 'moderate' | 'weak' | 'unknown';
+  matrix_text: string;
+  indicator: number | null;
+  trace: [number, number][];
+}
+
+export interface GenomicModelResult {
+  status: 'completed' | 'out_of_scope' | 'unavailable';
+  predicted_class?: 'pathogenic' | 'commensal';
+  probability_pathogenic?: number;
+  reasons?: string[];
+}
+
+export interface GenomeEvidence {
+  length_bp: number;
+  contigs: number;
+  n50_bp: number;
+  gc_pct: number;
+  markers: { gene: string; role: string; present: boolean; coverage_pct: number; closest_reference: string }[];
+  mecA: boolean;
+  ica_operon: boolean;
+  indicator: number | null;
+  genomic_model: GenomicModelResult;
+}
+
+export interface ClinicalEvidence {
+  factors: { factor: string; present: boolean; why: string }[];
+  present_count: number;
+  total: number;
+  indicator: number;
+}
+
+export interface Evidence {
+  microscopy?: MicroscopyEvidence | { error: string };
+  spectroscopy?: SpectrumEvidence | { error: string };
+  genomics?: GenomeEvidence | { error: string };
+  clinical?: ClinicalEvidence;
+}
+
+export interface ScorePart {
+  modality: ModalityName;
+  label: string;
+  indicator: number;
+  weight: number;
+}
+
 export interface AnalysisResponse {
   analysisId: string;
   sampleId?: string;
@@ -92,6 +162,9 @@ export interface AnalysisResponse {
     };
     crossAttention?: CrossAttentionMap;
   };
+  evidence?: Evidence;
+  findings?: string[];
+  scoreBreakdown?: ScorePart[];
   demoMode?: boolean;
   modelMode?: string;
   message?: string;

@@ -1,5 +1,7 @@
 // Doctor sign-in state. The backend issues a signed token on login; it is
-// kept in localStorage and sent as a Bearer token on every API request.
+// kept in sessionStorage (so closing the tab or browser signs the doctor out
+// and every new visit starts at the login page) and sent as a Bearer token on
+// every API request.
 
 export interface Doctor {
   username: string;
@@ -20,7 +22,7 @@ export const LOGIN_REQUIRED = true;
 const GUEST_DOCTOR: Doctor = { username: 'guest', name: 'Researcher' };
 
 // Pages anyone can open without signing in.
-export const PUBLIC_PATHS = ['/', '/login', '/welcome', '/about', '/research'];
+export const PUBLIC_PATHS = ['/', '/login', '/welcome', '/about'];
 
 export function isPublicPath(pathname: string): boolean {
   return !LOGIN_REQUIRED || PUBLIC_PATHS.includes(pathname);
@@ -29,7 +31,8 @@ export function isPublicPath(pathname: string): boolean {
 export function getSession(): Session | null {
   if (typeof window === 'undefined') return null;
   try {
-    const raw = localStorage.getItem(STORAGE_KEY);
+    localStorage.removeItem(STORAGE_KEY); // drop sessions remembered by older versions
+    const raw = sessionStorage.getItem(STORAGE_KEY);
     return raw ? (JSON.parse(raw) as Session) : null;
   } catch {
     return null;
@@ -47,13 +50,14 @@ export function getDoctor(): Doctor | null {
 
 export function saveSession(session: Session) {
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(session));
+    sessionStorage.setItem(STORAGE_KEY, JSON.stringify(session));
   } catch {}
   window.dispatchEvent(new Event(AUTH_EVENT));
 }
 
 export function clearSession() {
   try {
+    sessionStorage.removeItem(STORAGE_KEY);
     localStorage.removeItem(STORAGE_KEY);
     sessionStorage.removeItem('biofilm-last-result');
     sessionStorage.removeItem('biofilm-last-request');

@@ -139,8 +139,8 @@ def main():
     req = urllib.request.Request(BASE + "/api/analyze", data=data, headers=AUTH)
     with urllib.request.urlopen(req) as r:
         aresp = json.load(r)
-    check("clinical /api/analyze still demoMode=True", aresp.get("demoMode") is True)
-    check("clinical /api/analyze modelMode=demo", aresp.get("modelMode") == "demo")
+    check("clinical /api/analyze is not presented as a trained-model result", aresp.get("demoMode") is False)
+    check("clinical /api/analyze modelMode=evidence_score", aresp.get("modelMode") == "evidence_score")
 
     # 6. missing model artifact -> 503 (direct service unit test)
     sys.path.insert(0, os.path.join(ROOT))

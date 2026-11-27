@@ -28,7 +28,6 @@ export function Footer() {
               <li><Link href="/dashboard" className="text-ink hover:text-primary">Dashboard</Link></li>
               <li><Link href="/analyze" className="text-ink hover:text-primary">New Analysis</Link></li>
               <li><Link href="/history" className="text-ink hover:text-primary">History</Link></li>
-              <li><Link href="/research" className="text-ink hover:text-primary">Methodology</Link></li>
             </ul>
           </div>
 

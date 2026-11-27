@@ -2,24 +2,22 @@
 
 import { useState, useMemo, useEffect } from 'react';
 import Link from 'next/link';
-import { Search, ArrowUpRight, FileSpreadsheet } from 'lucide-react';
+import { Search, FileSpreadsheet } from 'lucide-react';
 import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
 import { Input, Select } from '@/components/ui/Input';
 import { EmptyState } from '@/components/ui/Modal';
-import { DemoBadge } from '@/components/ui/DemoBadge';
 import { getAnalysisHistory } from '@/lib/api';
 import { formatDateTime } from '@/lib/utils';
 import { AnalysisSummary, ModalityName } from '@/lib/types';
-import { MOCK_HISTORY } from '@/lib/mockData';
 
 export default function HistoryPage() {
   const [search, setSearch] = useState('');
   const [risk, setRisk] = useState('all');
   const [type, setType] = useState('all');
   const [status, setStatus] = useState('all');
-  const [history, setHistory] = useState<AnalysisSummary[]>(MOCK_HISTORY);
+  const [history, setHistory] = useState<AnalysisSummary[]>([]);
   const [loading, setLoading] = useState(false);
 
   // Load history from backend on mount
@@ -28,9 +26,7 @@ export default function HistoryPage() {
     setLoading(true);
     getAnalysisHistory()
       .then((data) => {
-        if (!cancelled && data.length > 0) {
-          setHistory(data);
-        }
+        if (!cancelled) setHistory(data);
       })
       .catch(() => {})
       .finally(() => {
@@ -59,7 +55,6 @@ export default function HistoryPage() {
           <h1 className="mt-2 text-2xl sm:text-3xl font-semibold text-ink">All multimodal analyses</h1>
           <p className="mt-1.5 text-sm text-ink-secondary">Browse, filter, and review prior research outputs.</p>
         </div>
-        <DemoBadge />
       </div>
 
       <Card padding="md" className="mb-5">
@@ -110,8 +105,8 @@ export default function HistoryPage() {
       {filtered.length === 0 ? (
         <EmptyState
           icon={<FileSpreadsheet className="h-6 w-6" />}
-          title="No analyses match these filters"
-          description="Try clearing one or more filters, or start a new multimodal analysis to populate the table."
+          title={history.length ? 'No analyses match these filters' : 'No analyses yet'}
+          description={history.length ? 'Try clearing one or more filters.' : 'Run an analysis and it will appear here.'}
           action={<Link href="/analyze"><Button>Start Analysis</Button></Link>}
         />
       ) : (
@@ -129,11 +124,10 @@ export default function HistoryPage() {
                   <Th>Sample ID</Th>
                   <Th>Type</Th>
                   <Th>Modalities</Th>
-                  <Th>Probability</Th>
+                  <Th>Score</Th>
                   <Th>Risk</Th>
                   <Th>Status</Th>
                   <Th>Created</Th>
-                  <Th className="text-right">Actions</Th>
                 </tr>
               </thead>
               <tbody>
@@ -184,14 +178,6 @@ function HistoryRow({ row }: { row: AnalysisSummary }) {
         <StatusBadge status={row.status} />
       </Td>
       <Td className="text-ink-secondary">{formatDateTime(row.createdAt)}</Td>
-      <Td className="text-right">
-        <Link
-          href={`/results?id=${encodeURIComponent(row.analysisId)}`}
-          className="inline-flex items-center gap-1 text-[12px] font-medium text-primary hover:text-primary-700"
-        >
-          Open <ArrowUpRight className="h-3.5 w-3.5" />
-        </Link>
-      </Td>
     </tr>
   );
 }

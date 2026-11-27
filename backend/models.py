@@ -110,6 +110,10 @@ class AnalysisResponse(BaseModel):
     prediction: Optional[Prediction] = None
     modalities: dict[str, ModalityInfo] = {}
     interpretation: Optional[Interpretation] = None
+    # Measurements from the uploaded files (see evidence.py), keyed by modality
+    evidence: Optional[dict] = None
+    findings: list[str] = []
+    score_breakdown: list[dict] = Field([], alias="scoreBreakdown")
     demo_mode: bool = Field(True, alias="demoMode")
     model_mode: str = Field("demo", alias="modelMode")
     message: Optional[str] = None

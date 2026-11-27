@@ -70,6 +70,9 @@ export function buildAnalysisPayload(
   const banner = demoFlag
     ? "DEMO MODE: the result in this report is a simulated value from a research prototype. "
       + "It is not a clinical diagnosis and must not be used for patient care."
+    : analysis?.modelMode === "evidence_score"
+    ? "EVIDENCE SCORE: the score combines the indicators measured from the uploaded files. "
+      + "It is not a clinical diagnosis and must not be used for patient care."
     : undefined;
 
   const sections: ReportRow[] = [];
@@ -98,15 +101,19 @@ export function buildAnalysisPayload(
 
   const has = (k: string) => !!analysis?.modalities?.[k]?.available;
   const provided = (k: string) => has(k) ? "Provided" : "Not provided";
-  sections.push({
-    heading: "Evidence used",
-    fields: [
-      { label: "Microscopy image", value: provided("microscopy") },
-      { label: "Raman spectrum", value: provided("spectroscopy") },
-      { label: "Genome sequence", value: provided("genomics") },
-      { label: "Clinical information", value: provided("clinical") },
-    ],
-  });
+  if (analysis?.evidence) {
+    sections.push(...evidenceSections(analysis));
+  } else {
+    sections.push({
+      heading: "Evidence used",
+      fields: [
+        { label: "Microscopy image", value: provided("microscopy") },
+        { label: "Raman spectrum", value: provided("spectroscopy") },
+        { label: "Genome sequence", value: provided("genomics") },
+        { label: "Clinical information", value: provided("clinical") },
+      ],
+    });
+  }
 
   sections.push({
     heading: "Clinical information",
@@ -133,6 +140,97 @@ export function buildAnalysisPayload(
            + "for diagnosis or treatment decisions.",
   };
   return { payload, analysisId };
+}
+
+/** Report sections for the measurements made on each uploaded file (backend/evidence.py). */
+function evidenceSections(analysis: AnalysisResponse): ReportRow[] {
+  const ev = analysis.evidence ?? {};
+  const rows: ReportRow[] = [];
+  const pct = (v: number) => `${Math.round(v * 100)}%`;
+
+  if (analysis.findings?.length) {
+    rows.push({
+      heading: "Key findings",
+      fields: analysis.findings.map((f, i) => ({ label: `Finding ${i + 1}`, value: f })),
+    });
+  }
+
+  const parts = analysis.scoreBreakdown ?? [];
+  if (parts.length) {
+    rows.push({
+      heading: "How the score was calculated (average of measured indicators)",
+      fields: [
+        ...parts.map((p) => ({ label: p.label, value: pct(p.indicator) })),
+        { label: "Score", value: pct(analysis.prediction?.biofilmProbability ?? 0) },
+      ],
+    });
+  }
+
+  const m = ev.microscopy;
+  if (m) {
+    rows.push("error" in m
+      ? { heading: "Microscopy image", fields: [{ label: "Result", value: m.error }] }
+      : {
+          heading: "Microscopy image analysis",
+          fields: [
+            { label: "Pattern", value: m.pattern_text },
+            { label: "Surface covered", value: `${m.coverage_pct}%` },
+            { label: "Cells in clusters", value: `${m.clustered_biomass_pct}%` },
+            { label: "Clusters", value: `${m.cluster_count} (plus ${m.micro_colony_count} micro-colonies)` },
+            ...(m.live_pct !== null ? [{ label: "Live cells", value: `${m.live_pct}%` }] : []),
+            ...(m.matrix_pct !== null ? [{ label: "Matrix (EPS) stain", value: `${m.matrix_pct}% of the image` }] : []),
+          ],
+        });
+  }
+
+  const s = ev.spectroscopy;
+  if (s) {
+    rows.push("error" in s
+      ? { heading: "Raman spectrum", fields: [{ label: "Result", value: s.error }] }
+      : {
+          heading: "Raman spectrum analysis",
+          fields: [
+            { label: "Matrix signal", value: `${s.matrix_text} (ratio ${s.matrix_ratio ?? "-"})` },
+            { label: "Signal quality", value: `${s.quality} (signal-to-noise ${s.snr})` },
+            ...s.peaks.map((p) => ({ label: `Peak ${p.wavenumber} cm-1`, value: p.assignment })),
+          ],
+        });
+  }
+
+  const g = ev.genomics;
+  if (g) {
+    if ("error" in g) {
+      rows.push({ heading: "Genome", fields: [{ label: "Result", value: g.error }] });
+    } else {
+      const model = g.genomic_model;
+      rows.push({
+        heading: "Genome analysis",
+        fields: [
+          { label: "Genome size", value: `${(g.length_bp / 1e6).toFixed(2)} Mb, ${g.contigs} contigs, N50 ${(g.n50_bp / 1000).toFixed(0)} kb` },
+          { label: "GC content", value: `${g.gc_pct}%` },
+          ...g.markers.map((mk) => ({
+            label: `Gene ${mk.gene}`,
+            value: `${mk.present ? "FOUND" : "Not found"} (${mk.coverage_pct}% match) - ${mk.role}`,
+          })),
+          {
+            label: "Genomic model",
+            value: model.status === "completed"
+              ? `Predicted ${model.predicted_class} S. epidermidis (P = ${Math.round((model.probability_pathogenic ?? 0) * 100)}%)`
+              : "Not run: genome outside the model's training data (S. epidermidis only)",
+          },
+        ],
+      });
+    }
+  }
+
+  const c = ev.clinical;
+  if (c) {
+    rows.push({
+      heading: `Clinical risk factors (${c.present_count} of ${c.total} present)`,
+      fields: c.factors.map((f) => ({ label: f.present ? "Present" : "Absent", value: f.factor })),
+    });
+  }
+  return rows;
 }
 
 export function downloadAnalysisReport(): void {

@@ -22,6 +22,7 @@ import { DemoBadge } from '@/components/ui/DemoBadge';
 import { formatDateTime } from '@/lib/utils';
 import { AnalysisResponse } from '@/lib/types';
 import { getAnalysis } from '@/lib/api';
+import { EvidenceSummary } from '@/components/results/EvidenceCards';
 import { clinicalLabel, RISK_MEANING } from '@/lib/clinicalLabels';
 
 export default function ResultsPage() {
@@ -117,30 +118,44 @@ export default function ResultsPage() {
             <span>Generated {formatDateTime(result.completedAt || result.createdAt)}</span>
           </div>
         </div>
-        <DemoBadge />
+        {!result.evidence && <DemoBadge />}
       </div>
 
       <div className="rise-in">
         <ResultHero result={result} />
       </div>
 
-      <div className="mt-6 rise-in" style={{ animationDelay: '150ms' }}>
-        <Disclaimer result={result} />
-      </div>
-
-      <div className="mt-8 grid grid-cols-1 lg:grid-cols-3 gap-5">
-        <div className="lg:col-span-2 space-y-5 rise-in" style={{ animationDelay: '300ms' }}>
-          <ModalityEvidence result={result} />
-        </div>
-        <div className="space-y-5">
-          <div className="rise-in" style={{ animationDelay: '400ms' }}>
-            <ClinicalSummary requestInfo={requestInfo} />
+      {result.evidence ? (
+        <>
+          <div className="mt-8 rise-in" style={{ animationDelay: '150ms' }}>
+            <EvidenceSummary result={result} />
           </div>
-          <div className="rise-in" style={{ animationDelay: '500ms' }}>
-            <Actions result={result} />
+          <div className="mt-8 flex flex-wrap items-center gap-3 rise-in" style={{ animationDelay: '300ms' }}>
+            <Button iconLeft={<Download className="h-4 w-4" />} onClick={downloadReport}>Download Report</Button>
+            <Link href="/analyze">
+              <Button variant="outline" iconRight={<RefreshCw className="h-4 w-4" />}>New Analysis</Button>
+            </Link>
           </div>
-        </div>
-      </div>
+          <p className="mt-8 text-[12px] text-ink-secondary">
+            Research prototype. Not a clinical diagnosis.
+          </p>
+        </>
+      ) : (
+        <>
+          <div className="mt-6 rise-in" style={{ animationDelay: '150ms' }}>
+            <Disclaimer result={result} />
+          </div>
+          <div className="mt-8 grid grid-cols-1 lg:grid-cols-3 gap-5">
+            <div className="lg:col-span-2 space-y-5">
+              <ModalityEvidence result={result} />
+            </div>
+            <div className="space-y-5">
+              <ClinicalSummary requestInfo={requestInfo} />
+              <Actions result={result} />
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 }
@@ -153,6 +168,7 @@ function ResultHero({ result }: { result: AnalysisResponse }) {
   const color = category === 'high' ? '#C94C4C' : category === 'intermediate' ? '#D99A2B' : '#2E8B72';
   const accent =
     category === 'high' ? 'danger' : category === 'intermediate' ? 'warning' : 'success';
+  const evidenceScore = result.modelMode === 'evidence_score';
 
   const radialData = [
     { name: 'Probability', value: pct, fill: color },
@@ -163,18 +179,11 @@ function ResultHero({ result }: { result: AnalysisResponse }) {
       <div className="absolute -right-32 -top-32 h-72 w-72 rounded-full bg-primary-50 opacity-50 pointer-events-none" />
       <div className="grid lg:grid-cols-2 gap-8 items-center relative">
         <div>
-          <p className="text-[11px] font-semibold tracking-widest uppercase text-primary">Model output</p>
-          <h2 className="mt-2 text-3xl font-semibold text-ink">Biofilm-Associated Risk</h2>
-          <p className="mt-2 text-sm text-ink-secondary max-w-md">
-            Combined estimate from the evidence supplied for this sample.
-          </p>
+          <h2 className="text-3xl font-semibold text-ink">Biofilm-Associated Risk</h2>
 
           <div className="mt-5 flex flex-wrap items-center gap-2">
             <Badge variant={accent as any} size="md" dot className="pop-in" style={{ animationDelay: '900ms' }}>
               Risk category: {category}
-            </Badge>
-            <Badge variant="neutral" size="md">
-              Model-estimated probability
             </Badge>
           </div>
           {RISK_MEANING[category] && (
@@ -200,7 +209,7 @@ function ResultHero({ result }: { result: AnalysisResponse }) {
               <p className="text-5xl font-semibold leading-none tabular-nums" style={{ color }}>
                 {shown}<span className="text-2xl align-top">%</span>
               </p>
-              <p className="text-[11px] uppercase tracking-widest text-ink-secondary mt-2">Probability</p>
+              <p className="text-[11px] uppercase tracking-widest text-ink-secondary mt-2">{evidenceScore ? 'Score' : 'Probability'}</p>
             </div>
           </div>
         </div>
@@ -222,7 +231,11 @@ function Disclaimer({ result }: { result: AnalysisResponse }) {
           <p className="mt-1 text-[13px] text-ink-secondary leading-relaxed">{msg}</p>
           <div className="mt-2">
             <Badge variant="warning" size="sm" dot>
-              {result.modelMode === 'demo' ? 'DEMO MODEL MODE' : 'Model mode: ' + result.modelMode}
+              {result.modelMode === 'demo'
+                ? 'DEMO MODEL MODE'
+                : result.modelMode === 'evidence_score'
+                ? 'Evidence score'
+                : 'Model mode: ' + result.modelMode}
             </Badge>
           </div>
         </div>
@@ -231,6 +244,7 @@ function Disclaimer({ result }: { result: AnalysisResponse }) {
   );
 }
 
+// Older stored analyses without measured evidence.
 function ModalityEvidence({ result }: { result: AnalysisResponse }) {
   const modalities = result.modalities;
   const items = [
@@ -330,6 +344,17 @@ function Row({ label, value }: { label: string; value: any }) {
       <dd className="text-ink text-[13px] font-medium text-right">{value}</dd>
     </div>
   );
+}
+
+/** Builds and saves the PDF report for the analysis shown on this page. */
+function downloadReport() {
+  try {
+    // run the download immediately on the user gesture (avoid browser
+    // security restrictions when delayed)
+    require("@/lib/downloadReport").downloadAnalysisReport();
+  } catch (e: any) {
+    alert("Download failed: " + (e?.message || "unknown error"));
+  }
 }
 
 function Actions({ result }: { result: AnalysisResponse }) {

@@ -1,0 +1,57 @@
+TEST 8: S. EPIDERMIDIS ATCC 12228 - COMMENSAL REFERENCE STRAIN (REAL GENOMIC MODEL)
+Data type: REAL DATASET
+========================================================================
+
+FILES IN THIS FOLDER
+  1_microscopy.png     SIMULATED image (same as Test 4)
+  2_spectroscopy.csv   REAL Raman spectrum - Bacteria-ID dataset, S. epidermidis isolate (same as Test 4)
+  3_genomics.fasta     REAL genome - NCBI RefSeq NC_004461.1, Staphylococcus epidermidis ATCC 12228,
+                       complete sequence (2.5 Mb). ATCC 12228 is a non-biofilm-forming strain that is
+                       not associated with infection (a commensal reference strain).
+
+WHY THIS TEST
+  Shows the real genomic model on a commensal genome, and shows its limitation honestly.
+
+HOW TO RUN
+1. Sign in at http://localhost:3000
+2. New Analysis -> Step 1: copy each value from STEP 1 below into the matching field
+3. Step 2: upload 1_microscopy.png
+4. Step 3: upload 2_spectroscopy.csv (a spectrum preview should appear)
+5. Step 4: upload 3_genomics.fasta
+6. Step 5: copy the values from STEP 5 below
+7. Step 6: click "Run Multimodal Analysis"
+
+STEP 1 - SAMPLE INFORMATION (copy and paste)
+  Sample ID                    : SKN-2026-004
+  Study ID                     : BF-TEST-2026
+  Sample Type                  : Wound swab
+  Collection date              : 25-10-2026
+  Infection context            : Post-surgical
+  Wound / implant context      : Healthy skin near a healed incision (screening swab)
+  Notes                        : Routine skin screening swab. No signs of infection.
+
+STEP 5 - CLINICAL DATA (copy and paste / select)
+  Infection context            : Post-surgical
+  Chronicity / duration (days) : 2
+  Implant present              : No
+  Sample site                  : Abdomen
+  Previous treatment category  : None
+  Previous culture information : Unknown
+  Additional notes             : Screening sample, patient well.
+
+WHAT TO CHECK ON THE RESULTS PAGE
+- The demo risk estimate with the DEMO MODE banner (simulated, as for every test)
+- The "Genomic Research Model" card shows a REAL prediction, with genome length ~2.50 Mb and GC ~32%
+
+RESULT OBSERVED WHEN TESTED
+  Predicted: pathogenic, P(pathogenic) = 0.97  -> does NOT match the known answer (commensal).
+  This is a false positive, the same kind of error the model made on its own test set
+  (3 of 6 commensal test isolates were also predicted pathogenic). It shows why the model
+  is a research tool trained on only 103 genomes, and why more data is needed.
+
+KNOWN ANSWER
+  - Organism: Staphylococcus epidermidis ATCC 12228, commensal reference strain.
+  - Expected class: commensal.
+
+The genomic model is a research model (103 training genomes, test accuracy 69%).
+It is not a biofilm or infection diagnosis.

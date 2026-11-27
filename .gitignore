@@ -20,3 +20,7 @@ backend/doctors.json
 .DS_Store
 Thumbs.db
 .vscode/
+
+# Saved analyses (sample data; never commit)
+backend/analyses.json
+backend/analyses.tmp

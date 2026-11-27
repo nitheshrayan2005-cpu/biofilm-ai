@@ -421,14 +421,6 @@ function SampleInfoStep({
         onChange={(e) => onChange({ ...form, notes: e.target.value })}
         rows={3}
       />
-
-      <div className="mt-5">
-        <StatusBanner
-          variant="info"
-          icon={<ShieldCheck className="h-4 w-4" />}
-          description="Use research/sample identifiers instead of patient names or directly identifying information."
-        />
-      </div>
     </div>
   );
 }
@@ -789,8 +781,8 @@ function ReviewStep({ onRun, submitting }: { onRun: () => void; submitting: bool
         <StatusBanner
           variant="warning"
           icon={<FlaskConical className="h-4 w-4" />}
-          title="Demo mode"
-          description="The multimodal Transformer backend is not connected in this build. The result below will be a clearly labeled demo prediction."
+          title="How the result is calculated"
+          description="Each uploaded file is measured (image clusters, Raman peaks, genes, clinical risk factors) and combined into one evidence score. It is not a clinical diagnosis."
         />
       </div>
 
