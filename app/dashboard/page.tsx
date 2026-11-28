@@ -140,8 +140,8 @@ export default function DashboardPage() {
                     fontSize: 12,
                   }}
                 />
-                <Line type="monotone" dataKey="analyses" stroke="#176B87" strokeWidth={2.5} dot={{ r: 3, fill: '#176B87' }} activeDot={{ r: 6 }} />
-                <Line type="monotone" dataKey="high" stroke="#C94C4C" strokeWidth={2} dot={false} strokeDasharray="4 4" />
+                <Line type="monotone" dataKey="analyses" stroke="#176B87" strokeWidth={2.5} dot={{ r: 3, fill: '#176B87' }} activeDot={{ r: 6 }} isAnimationActive={false} />
+                <Line type="monotone" dataKey="high" stroke="#C94C4C" strokeWidth={2} dot={false} strokeDasharray="4 4" isAnimationActive={false} />
               </LineChart>
             </ResponsiveContainer>
           </div>
@@ -164,6 +164,7 @@ export default function DashboardPage() {
                   paddingAngle={3}
                   dataKey="value"
                   stroke="none"
+                  isAnimationActive={false}
                 >
                   {distribution.map((d, i) => (
                     <Cell key={i} fill={d.color} />
